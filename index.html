@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>星星的密室日常活动——百币英雄</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:PingFang SC,Microsoft YaHei,sans-serif}
+body{background:#0b0f1e;color:#fff}
+.main{max-width:700px;margin:0 auto;padding:20px;min-height:100vh}
+
+.game{display:none;background:#0b0f1e;position:relative}
+.competition-mode .game{
+  display:block;
+  background: linear-gradient(90deg, #ffc107 0%, #ffc107 50%, #9c27b0 50%, #9c27b0 100%);
+}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:10px 0}
+.user-text{color:#a0a8c8;font-size:15px}
+.life{color:#ffde55}
+.count-down{font-size:22px;font-weight:700;color:#ffde55}
+.progress-bar{width:100%;height:8px;background:#1e253e;border-radius:4px;margin:10px 0;overflow:hidden}
+.progress-line{height:100%;background:linear-gradient(90deg,#ff4380,#fa7250);width:100%;transition:.1s linear}
+
+.question-box{background:#12172b;border-radius:20px;padding:28px;margin-top:10px}
+.question-title{font-size:20px;line-height:1.6;margin-bottom:24px;color:#f0f4ff}
+.option{background:#1b223a;border-radius:14px;padding:18px 16px;margin-bottom:12px;font-size:16px;cursor:pointer}
+.option.selected{background:#293557}
+.option.right{background:#1a6c38}
+.option.wrong{background:#7a2c2c}
+.option.mask{pointer-events:none}
+
+.login{background:#12172b;border-radius:20px;padding:40px;margin-top:30px;border:1px solid #273050}
+.login h2{text-align:center;font-size:24px;color:#f9e488;margin-bottom:26px}
+.login input{width:100%;height:50px;background:#1b223a;border:none;border-radius:12px;color:#fff;padding:0 16px;font-size:16px;margin-bottom:14px}
+.login button{width:100%;height:52px;background:linear-gradient(90deg,#6250ff,#8a7aff);border:none;border-radius:12px;color:#fff;font-size:17px;font-weight:700}
+.tip{text-align:center;color:#ff5555;margin-top:12px;font-size:14px}
+.time-info{text-align:center;margin-top:20px;font-size:15px;color:#c0c8e7}
+
+.admin{display:none;background:#12172b;border-radius:20px;padding:30px;margin-top:20px}
+.admin h3{color:#f9e488;margin-bottom:15px}
+.admin textarea{width:100%;height:300px;background:#1b223a;color:#fff;border-radius:8px;padding:10px;font-size:14px;margin-bottom:10px}
+.admin button{background:#6250ff;color:#fff;border:none;border-radius:10px;padding:10px 16px;margin-right:10px}
+
+.end{display:none;text-align:center;background:#12172b;border-radius:20px;padding:40px;margin-top:20px}
+.end h2{font-size:26px;color:#f9e488;margin-bottom:20px}
+.end p{color:#c0c8e7;font-size:16px;margin:6px 0}
+.end .final{color:#ffde55;font-size:18px;margin:20px 0}
+.end button{background:linear-gradient(90deg,#ff4380,#fa7250);border:none;border-radius:14px;color:#fff;padding:14px 32px;font-size:16px;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="main">
+  <div class="login" id="loginBox">
+    <h2>星星的密室日常活动——百币英雄</h2>
+    <input type="text" id="username" placeholder="请输入昵称">
+    <input type="password" id="pwd" placeholder="请输入活动密码">
+    <button onclick="login()">开始挑战</button>
+    <div class="tip" id="loginTip"></div>
+    <div class="time-info" id="timeInfo"></div>
+  </div>
+
+  <div class="game" id="gameBox">
+    <div class="top-bar">
+      <div class="user-text" id="userInfo"></div>
+      <div class="life" id="lifeInfo">复活卡：1</div>
+      <div class="count-down" id="countDown">12</div>
+    </div>
+    <div class="progress-bar"><div class="progress-line" id="progress"></div></div>
+    <div class="question-box">
+      <div class="question-title" id="question"></div>
+      <div class="option" onclick="pick(0)"></div>
+      <div class="option" onclick="pick(1)"></div>
+      <div class="option" onclick="pick(2)"></div>
+      <div class="option" onclick="pick(3)"></div>
+    </div>
+  </div>
+
+  <div class="admin" id="adminPanel">
+    <h3>管理员 - 题库编辑</h3>
+    <textarea id="questionEditor"></textarea>
+    <button onclick="saveQuestions()">保存题库</button>
+    <button onclick="copyFullCode()">复制完整代码</button>
+  </div>
+
+  <div class="end" id="endBox">
+    <h2 id="endTitle"></h2>
+    <p>昵称：<span id="sName"></span></p>
+    <p>答对题数：<span id="sCorrect"></span></p>
+    <p id="racePeriodTip" style="margin-top:10px;color:#ffde55"></p>
+    <div class="final" id="sFinal"></div>
+    <button onclick="goBack()">返回</button>
+  </div>
+</div>
+
+<script>
+const OLD_PASSWORDS = {
+  "white202501":true,"white202502":true,"white202503":true,"white202504":true,"white202505":true,
+  "white202506":true,"white202507":true,"white202508":true,"white202509":true,"white202510":true,
+  "white202511":true,"white202512":true,"white202513":true,"white202514":true,"white202515":true,
+  "white202516":true,"white202517":true,"white202518":true,"white202519":true,"white202520":true,
+  "noback202501":false,"noback202502":false,"noback202503":false,"noback202504":false,"noback202505":false,
+  "noback202506":false,"noback202507":false,"noback202508":false,"noback202509":false,"noback202510":false,
+  "noback202511":false,"noback202512":false,"noback202513":false,"noback202514":false,"noback202515":false,
+  "noback202516":false,"noback202517":false,"noback202518":false,"noback202519":false,"noback202520":false
+};
+
+const UNLIMITED_PASS = {
+  "7Sd2Kf9G":true,"P3s8VbN5":true,"2Fk6Zr7D":true,"J5g9Qh2S":true,"4Bv7Rt1K":true,
+  "M1s6Gf8Z":true,"9Dk2Fn7V":true,"C5b8Sh3J":true,"6Rt2Kg9P":true,"W2q7Df5S":true,
+  "3Nf6Kb2D":false,"8Gv1Sj5Z":false,"1Qk7Fb3D":false,"5Bn9Sh2K":false,"7Zr3Df6G":false,
+  "2Ps8Kj4V":false,"9Hj5Fn2B":false,"4Vm7Sk1D":false,"6Fg2Bn9J":false,"1Dk8Sr5V":false
+};
+
+const RACE_FIXED = {
+  "jingchen":"景晨",
+  "awmcful":"AW",
+  "wangyan":"亡烟",
+  "nannan":"楠楠",
+  "luotuo":"骆驼",
+  "baoyu":"鲍鱼",
+  "miaomiaojun":"喵喵君"
+};
+
+const RACE_FREE = ["bisai1","bisai2","bisai3","bisai4","bisai5","bisai6","bisai7","bisai8","bisai9","bisai10","bisai11","bisai12","bisai13","bisai14","bisai15"];
+
+const ADMIN_PWD = "admin2025";
+const ANSWER_TIME = 12;
+const JUDGE_DELAY = 3000;
+
+let isCompetitionAccount = false;
+
+let BANK = [
+{q:"水的化学式是？",o:["H2O","CO2","O2","H2"],a:0},
+{q:"地球自转一圈大约是？",o:["1小时","1天","1月","1年"],a:1},
+{q:"下列哪个是金属元素？",o:["氧","铁","碳","氢"],a:1},
+{q:"声音在以下哪种介质中传播最快？",o:["空气","水","真空","钢铁"],a:3},
+{q:"植物进行光合作用的主要色素是？",o:["叶黄素","胡萝卜素","叶绿素","花青素"],a:2},
+{q:"人体最大的器官是？",o:["心脏","肝脏","皮肤","大脑"],a:2},
+{q:"正常成年人的心率每分钟约？",o:["30-50次","60-100次","120-150次","180次以上"],a:1},
+{q:"下列哪个不属于维生素？",o:["A","B","C","X"],a:3},
+{q:"酸雨主要是由哪种气体过多导致？",o:["氧气","氮气","二氧化硫","氢气"],a:2},
+{q:"光年是什么单位？",o:["时间","长度","速度","质量"],a:1},
+{q:"太阳属于哪种天体？",o:["行星","恒星","卫星","彗星"],a:1},
+{q:"地球的卫星是？",o:["太阳","火星","月球","金星"],a:2},
+{q:"下列哪个行星离太阳最近？",o:["地球","火星","水星","木星"],a:2},
+{q:"太阳系最大的行星是？",o:["地球","火星","木星","土星"],a:2},
+{q:"下列哪个不是温室气体？",o:["二氧化碳","甲烷","氧气","水汽"],a:2},
+{q:"1+1=？",o:["1","2","3","4"],a:1},
+{q:"直角是多少度？",o:["45°","90°","180°","360°"],a:1},
+{q:"三角形内角和为？",o:["90°","180°","270°","360°"],a:1},
+{q:"圆周率π约等于？",o:["2.14","3.14","4.14","5.14"],a:1},
+{q:"负数乘以负数得？",o:["正数","负数","零","不确定"],a:0},
+{q:"长方形面积公式是？",o:["长+宽","长×宽","长÷宽","2×(长+宽)"],a:1},
+{q:"1公斤等于多少克？",o:["10","100","1000","10000"],a:2},
+{q:"1米等于多少厘米？",o:["10","100","1000","10000"],a:1},
+{q:"下列哪个是质数？",o:["4","6","9","7"],a:3},
+{q:"正方体有几个面？",o:["4","6","8","12"],a:1},
+{q:"《静夜思》的作者是？",o:["李白","杜甫","白居易","苏轼"],a:0},
+{q:"‘床前明月光’下一句是？",o:["疑是地上霜","举头望明月","低头思故乡","处处闻啼鸟"],a:0},
+{q:"《红楼梦》作者是？",o:["曹雪芹","罗贯中","吴承恩","施耐庵"],a:0},
+{q:"《三国演义》作者是？",o:["曹雪芹","罗贯中","吴承恩","施耐庵"],a:1},
+{q:"《西游记》作者是？",o:["曹雪芹","罗贯中","吴承恩","施耐庵"],a:2},
+{q:"《水浒传》作者是？",o:["曹雪芹","罗贯中","吴承恩","施耐庵"],a:3},
+{q:"孔子是哪家学派创始人？",o:["道家","儒家","法家","墨家"],a:1},
+{q:"老子是哪家学派代表？",o:["道家","儒家","法家","墨家"],a:0},
+{q:"我国的首都是？",o:["上海","北京","广州","深圳"],a:1},
+{q:"我国国旗是？",o:["五星红旗","青天白日","三色旗","星条旗"],a:0},
+{q:"我国国歌是？",o:["茉莉花","歌唱祖国","义勇军进行曲","我和我的祖国"],a:2},
+{q:"我国有多少个民族？",o:["50","56","65","70"],a:1},
+{q:"长江、黄河哪个更长？",o:["长江","黄河","一样长","不确定"],a:0},
+{q:"世界最高峰是？",o:["乔戈里峰","干城章嘉峰","珠穆朗玛峰","洛子峰"],a:2},
+{q:"世界上面积最大的国家是？",o:["中国","美国","俄罗斯","加拿大"],a:2},
+{q:"世界人口最多的国家是？",o:["印度","中国","美国","印尼"],a:1},
+{q:"七大洲中面积最小的是？",o:["欧洲","南极洲","大洋洲","南美洲"],a:2},
+{q:"四大洋中面积最大的是？",o:["大西洋","太平洋","印度洋","北冰洋"],a:1},
+{q:"赤道穿过的大陆不包括？",o:["Africa","South America","Asia","Europe"],a:3},
+{q:"下列哪个城市是直辖市？",o:["杭州","重庆","Nanjing","Chengdu"],a:1},
+{q:"鸡蛋煮熟是物理变化还是化学变化？",o:["物理","化学","都是","都不是"],a:1},
+{q:"铁生锈属于？",o:["物理变化","化学变化","核反应","无变化"],a:1},
+{q:"下列哪个是可再生能源？",o:["煤炭","石油","天然气","太阳能"],a:3},
+{q:"下列哪个是不可再生能源？",o:["风能","水能","煤炭","生物质能"],a:2},
+{q:"电脑CPU中文全称是？",o:["中央处理器","显卡","内存","硬盘"],a:0},
+{q:"下列哪个是存储设备？",o:["显示器","键盘","U盘","鼠标"],a:2},
+{q:"WWW表示？",o:["互联网","万维网","局域网","无线网"],a:1},
+{q:"IP地址主要用于？",o:["加密","定位设备","加速","杀毒"],a:1},
+{q:"‘蓝牙’主要用于？",o:["有线传输","短距离无线","长距离通信","供电"],a:1},
+{q:"火灾报警电话是？",o:["110","120","119","122"],a:2},
+{q:"急救电话是？",o:["110","120","119","122"],a:1},
+{q:"报警电话是？",o:["110","120","119","122"],a:0},
+{q:"交通事故报警是？",o:["110","120","119","122"],a:3},
+{q:"遇到触电首先应？",o:["拉开人","泼水","切断电源","人工呼吸"],a:2},
+{q:"下列哪种做法有助防火？",o:["乱扔烟头","超负荷用电","离家断电","玩火"],a:2},
+{q:"未成年人保护法规定未满多少周岁？",o:["12","14","16","18"],a:3},
+{q:"我国法定结婚年龄男性不早于？",o:["20","22","24","25"],a:1},
+{q:"合同生效的核心条件是？",o:["盖章","签字","自愿合法","公证"],a:2},
+{q:"故意伤人属于？",o:["民事纠纷","行政违法","刑事犯罪","道德问题"],a:2},
+{q:"‘红灯停、绿灯行’属于？",o:["道德","法律","习惯","建议"],a:1},
+{q:"驾驶机动车必须携带？",o:["身份证","学生证","驾驶证","工作证"],a:2},
+{q:"红色光波长在可见光中？",o:["最短","最长","中等","无规律"],a:1},
+{q:"彩虹形成原理主要是？",o:["反射","折射与色散","衍射","干涉"],a:1},
+{q:"平面镜成像属于？",o:["折射","反射","散射","衍射"],a:1},
+{q:"重力方向通常是？",o:["向上","向下水平","垂直地面","指向地心"],a:3},
+{q:"惯性大小与什么有关？",o:["速度","质量","体积","颜色"],a:1},
+{q:"压力作用效果与什么无关？",o:["压力大小","受力面积","速度","接触方式"],a:2},
+{q:"标准大气压下纯水沸点是？",o:["90℃","95℃","100℃","105℃"],a:2},
+{q:"下列哪个是导体？",o:["塑料","橡胶","铜","玻璃"],a:2},
+{q:"下列哪个是绝缘体？",o:["铁","铝","干木头","银"],a:2},
+{q:"交流电符号是？",o:["-","~","=","."],a:1},
+{q:"电池正极符号是？",o:["+","-","=","~"],a:0},
+{q:"人体安全电压一般不高于？",o:["12V","36V","110V","220V"],a:1},
+{q:"‘月有阴晴圆缺’原因是？",o:["地球自转","月球公转","云遮挡","太阳遮挡"],a:1},
+{q:"日食发生时位置在中间的是？",o:["太阳","地球","月球","金星"],a:2},
+{q:"月食发生时位置在中间的是？",o:["太阳","地球","月球","火星"],a:1},
+{q:"一年四季成因主要是？",o:["地球自转","地球公转倾斜","太阳远近","云层"],a:1},
+{q:"一天中气温最高一般在？",o:["正午12点","午后1-2点","日落","凌晨"],a:1},
+{q:"露水形成属于？",o:["凝固","熔化","液化","升华"],a:2},
+{q:"霜形成属于？",o:["凝固","凝华","液化","熔化"],a:1},
+{q:"标准普通话以什么为基础音？",o:["东北话","北京语音","南京话","上海话"],a:1},
+{q:"成语‘一丝不苟’形容？",o:["马虎","认真","懒惰","活泼"],a:1},
+{q:"‘半途而废’意思是？",o:["坚持到底","中途放弃","成功归来","失败重来"],a:1},
+{q:"‘画蛇添足’比喻？",o:["多余无用","恰到好处","精美无比","简洁高效"],a:0},
+{q:"‘井底之蛙’比喻？",o:["见识短浅","志向远大","勇敢无畏","谦虚谨慎"],a:0},
+{q:"我国古代四大发明不包括？",o:["造纸","火药","指南针","蒸汽机"],a:3},
+{q:"活字印刷发明者是？",o:["蔡伦","毕昇","张衡","沈括"],a:1},
+{q:"地动仪发明者是？",o:["蔡伦","毕昇","张衡","沈括"],a:2},
+{q:"‘纸上谈兵’主角是？",o:["项羽","刘邦","赵括","韩信"],a:2},
+{q:"‘破釜沉舟’主角是？",o:["项羽","刘邦","刘备","曹操"],a:0},
+{q:"‘三顾茅庐’请的是？",o:["诸葛亮","周瑜","鲁肃","吕布"],a:0},
+{q:"‘桃园三结义’不包括？",o:["刘备","关羽","张飞","赵云"],a:3},
+{q:"奥运会每几年举办一次？",o:["2年","4年","6年","8年"],a:1},
+{q:"足球比赛上场每队几人？",o:["9","10","11","12"],a:2},
+{q:"篮球比赛每队上场几人？",o:["5","6","7","8"],a:0},
+{q:"乒乓球一局先得几分获胜？",o:["9","11","13","15"],a:1},
+{q:"标准篮球场长约？",o:["22米","28米","32米","40米"],a:1},
+
+{q:"星穹铁道主角团乘坐的列车名为？",o:["星穹列车","开拓列车","星槎","无名客号"],a:0},
+{q:"下列哪位角色属于星核猎手？",o:["三月七","姬子","卡芙卡","杰帕德"],a:2},
+{q:"星穹铁道中‘星穹’代表的道路是？",o:["存护","毁灭","开拓","巡猎"],a:2},
+{q:"希儿所属阵营是？",o:["贝洛伯格","仙舟罗浮","星核猎手","星际和平公司"],a:0},
+{q:"景元是仙舟罗浮的？",o:["将军","药师","云骑","司命"],a:0},
+{q:"‘饮月君’指的是？",o:["刃","丹恒•饮月","镜流","罗刹"],a:1},
+{q:"下列角色使用量子属性的是？",o:["银狼","希露瓦","素裳","佩拉"],a:0},
+{q:"布洛妮娅在贝洛伯格的身份是？",o:["战士","医生","大守护者继承人","商人"],a:2},
+{q:"杰帕德属于哪个阵营？",o:["银鬃铁卫","云骑军","逐火之蛾","星核猎手"],a:0},
+{q:"艾丝妲的身份是？",o:["宇航员","空间站站长","科学家","商人"],a:1},
+{q:"‘罗刹’来自？",o:["贝洛伯格","仙舟罗浮","星际和平公司","其他星球"],a:3},
+{q:"镜流曾是？",o:["云骑将军","星核猎手","大守护者","药师"],a:0},
+{q:"下列哪个是冰属性角色？",o:["希儿","瓦尔特","杰帕德","桑博"],a:2},
+{q:"‘停云’所属势力是？",o:["仙舟罗浮","贝洛伯格","星核猎手","公司"],a:0},
+{q:"‘驭空’是仙舟的？",o:["飞行员","将军","药师","工匠"],a:0},
+{q:"‘刃’隶属于？",o:["星核猎手","云骑军","银鬃铁卫","公司"],a:0},
+{q:"‘瓦尔特’的能力与什么有关？",o:["虚数","物理","冰","风"],a:0},
+{q:"‘佩拉’的属性是？",o:["冰","量子","雷","物理"],a:0},
+{q:"‘青雀’的兴趣是？",o:["打牌","修炼","科研","经商"],a:0},
+{q:"‘符玄’擅长？",o:["占卜","剑术","医术","爆破"],a:0},
+
+{q:"原神主角被称为？",o:["旅行者","空荧","双子","异乡人"],a:0},
+{q:"提瓦特大陆共有多少种元素？",o:["5","6","7","8"],a:2},
+{q:"蒙德信奉的神是？",o:["摩拉克斯","巴巴托斯","巴尔泽布","大慈树王"],a:1},
+{q:"璃月信奉的神是？",o:["摩拉克斯","巴巴托斯","巴尔泽布","纳西妲"],a:0},
+{q:"稻妻雷神是？",o:["影","真","八重神子","九条裟罗"],a:0},
+{q:"须弥草神是？",o:["大慈树王","纳西妲","莱依拉","迪希雅"],a:1},
+{q:"枫丹主打元素是？",o:["水","火","岩","风"],a:0},
+{q:"‘钟离’的元素是？",o:["岩","风","雷","水"],a:0},
+{q:"‘温迪’的元素是？",o:["岩","风","雷","水"],a:1},
+{q:"‘雷电将军’元素是？",o:["岩","风","雷","水"],a:2},
+{q:"‘达达利亚’来自？",o:["至冬","蒙德","璃月","稻妻"],a:0},
+{q:"‘胡桃’是往生堂第几代堂主？",o:["75","77","79","81"],a:1},
+{q:"‘甘雨’是半仙，种族是？",o:["麒麟","仙狐","龙","鸟"],a:0},
+{q:"‘魈’属于？",o:["夜叉","仙人","魔神","人类"],a:0},
+{q:"‘万叶’元素是？",o:["风","雷","火","岩"],a:0},
+{q:"‘宵宫’元素是？",o:["风","雷","火","岩"],a:2},
+{q:"‘神里绫华’元素是？",o:["冰","水","雷","风"],a:0},
+{q:"‘妮露’所属地区是？",o:["须弥","璃月","稻妻","枫丹"],a:0},
+{q:"‘赛诺’元素是？",o:["雷","草","水","火"],a:0},
+{q:"‘提纳里’元素是？",o:["雷","草","水","火"],a:1},
+
+{q:"绝区零的世界观主舞台是？",o:["新艾利都","提瓦特","星际","仙舟"],a:0},
+{q:"‘空洞’中出现的危险现象叫？",o:["侵蚀","崩坏","污染","灾变"],a:0},
+{q:"主角所属组织名为？",o:["狡兔屋","对空课","秘闻社","星见座"],a:0},
+{q:"‘安比·德玛拉’属于？",o:["狡兔屋","白祇重工","六分仪","维多利亚家政"],a:1},
+{q:"‘比利·奇德’的职业风格偏向？",o:["枪手","战士","法师","治疗"],a:0},
+{q:"‘青衣’所属势力是？",o:["六分仪","狡兔屋","白祇重工","狐小队"],a:0},
+{q:"‘艾莲·乔’属于？",o:["对空课","狡兔屋","白祇重工","秘闻社"],a:0},
+{q:"‘露西’的身份是？",o:["维多利亚家政","狡兔屋","白祇重工","六分仪"],a:0},
+{q:"绝区零战斗核心机制是？",o:["连携技","爆发技","闪避反击","元素反应"],a:2},
+{q:"‘苍角’属于哪类势力？",o:["帮派势力","官方机构","家政","科研"],a:0},
+{q:"‘珂蕾妲·贝洛伯格’是？",o:["白祇重工领袖","狡兔屋队长","对空课课长","六分仪主管"],a:0},
+{q:"‘本·比格’属于？",o:["白祇重工","狡兔屋","维多利亚","六分仪"],a:0},
+{q:"‘派派’是哪个组织的？",o:["狡兔屋","对空课","六分仪","白祇重工"],a:1},
+{q:"‘冯·莱卡恩’种族是？",o:["狼人","人类","机械","精灵"],a:0},
+{q:"‘猫宫又奈’特征是？",o:["猫耳娘","狐耳","龙角","兔耳"],a:0},
+{q:"‘守岸人’定位偏向？",o:["远程输出","近战坦克","治疗","辅助控制"],a:0},
+{q:"绝区零的货币名为？",o:["行迹","星琼","摩拉","温迪戈"],a:3},
+{q:"‘空条·乔’原型致敬的是？",o:["JOJO","火影","海贼","龙珠"],a:0},
+{q:"‘维多利亚家政’主打风格是？",o:["优雅执事","暴力冲锋","黑客技术","法术"],a:0},
+{q:"‘狡兔屋’成员不包括？",o:["安比","妮可","比利","青衣"],a:3},
+
+{q:"lim(x→0) sinx/x =?",o:["0","1","∞","不存在"],a:1},
+{q:"lim(x→∞) (1+1/x)^x =?",o:["1","e","0","∞"],a:1},
+{q:"f(x)=x²，则f’(x)=?",o:["x","2x","2","0"],a:1},
+{q:"f(x)=lnx，则f’(x)=?",o:["x","1/x","e^x","-1/x"],a:1},
+{q:"∫x dx =?",o:["x²/2 + C","x² + C","2x + C","1 + C"],a:0},
+{q:"∫1/x dx =?",o:["lnx + C","x + C","e^x + C","1/x + C"],a:0},
+{q:"∫sinx dx =?",o:["cosx + C","-cosx + C","sinx + C","-sinx + C"],a:1},
+{q:"∫e^x dx =?",o:["e^x + C","1/x + C","lnx + C","xe^x + C"],a:0},
+{q:"函数f(x)=x³-3x的极大值点是x=?",o:["1","-1","0","3"],a:1},
+{q:"∫(0→1) x² dx =?",o:["1/2","1/3","1","0"],a:1},
+{q:"∫(0→π) sinx dx =?",o:["0","1","2","π"],a:2},
+{q:"级数∑(1/n) 是？",o:["收敛","发散","条件收敛","绝对收敛"],a:1},
+{q:"级数∑(1/n²) 是？",o:["收敛","发散","振荡","不确定"],a:0},
+{q:"f(x,y)=xy，则∂f/∂x =?",o:["x","y","xy","1"],a:1},
+{q:"d(uv)=?",o:["u dv + v du","u dv - v du","uv du","uv dv"],a:0},
+{q:"lim(x→0) (e^x -1)/x =?",o:["0","1","e","∞"],a:1},
+{q:"∫sec²x dx =?",o:["tanx + C","cotx + C","secx + C","cscx + C"],a:0},
+{q:"f(x)=sin²x+cos²x，导数为？",o:["0","1","2sinx","2cosx"],a:0},
+{q:"∫1/(1+x²) dx =?",o:["arcsinx + C","arctanx + C","ln(1+x²)+C","1/(1+x²)+C"],a:1},
+{q:"∫(0→+∞) e^(-x) dx =?",o:["0","1","∞","发散"],a:1},
+
+{q:"狭义相对论的基本公设不包括",o:["光速不变","相对性原理","绝对时空","物理定律协变"],a:2},
+{q:"洛伦兹变换描述的是",o:["时空坐标变换","能量变换","质量变换","动量变换"],a:0},
+{q:"相对论中，物体速度接近c时，质量会",o:["减小","增大","不变","消失"],a:1},
+{q:"钟慢效应指高速参考系中时间",o:["变快","变慢","不变","倒流"],a:1},
+{q:"尺缩效应发生在哪个方向",o:["运动方向","垂直方向","所有方向","都不"],a:0},
+{q:"相对论质量公式m =?",o:["m0/γ","γm0","m0v/c","m0c/v"],a:1},
+{q:"质能方程E=?",o:["mc","mc²","m²c","mv²"],a:1},
+{q:"真空中光速c最接近",o:["3×10⁶","3×10⁷","3×10⁸","3×10⁹"],a:2},
+{q:"相对论中同时性是",o:["绝对的","相对的","随机的","不存在"],a:1},
+{q:"光子静质量为",o:["0","m0","∞","不确定"],a:0},
+
+{q:"The word 'ephemeral' means",o:["永久的","短暂的","巨大的","神秘的"],a:1},
+{q:"'Ambivalent' means",o:["矛盾的","友好的","冷漠的","勇敢的"],a:0},
+{q:"'Ubiquitous' means",o:["稀少的","无处不在的","独特的","古老的"],a:1},
+{q:"'Resilient' means",o:["脆弱的","有弹性的","贪婪的","谨慎的"],a:1},
+{q:"'Pernicious' means",o:["有益的","有害的","平凡的","杰出的"],a:1},
+{q:"'Arbitrary' means",o:["任意的","公平的","逻辑的","必然的"],a:0},
+{q:"'Cynical' means",o:["乐观的","愤世嫉俗的","天真的","勤奋的"],a:1},
+{q:"'Euphoria' means",o:["狂喜","忧郁","疲惫","平静"],a:0},
+{q:"'Dilemma' means",o:["解决方案","困境","优势","趋势"],a:1},
+{q:"'Pragmatic' means",o:["理想主义","务实","教条","浪漫"],a:1},
+
+{q:"'Inevitably' means",o:["不可避免地","突然地","缓慢地","勉强地"],a:0},
+{q:"'Hypothesis' means",o:["结论","假设","证明","观察"],a:1},
+{q:"'Paradox' means",o:["悖论","定理","规律","定义"],a:0},
+{q:"'Substantial' means",o:["微小的","大量的","表面的","临时的"],a:1},
+{q:"'Consecutive' means",o:["连续的","间断的","随机的","重复的"],a:0},
+{q:"'Equivalent' means",o:["不同的","等价的","相反的","相似的"],a:1},
+{q:"'Feasible' means",o:["不可行","可行","昂贵","简单"],a:1},
+{q:"'Inherent' means",o:["外在的","内在的","后天的","偶然的"],a:1},
+{q:"'Nullify' means",o:["确认","无效化","加强","延长"],a:1},
+{q:"'Validate' means",o:["证实","怀疑","猜测","否认"],a:0}
+];
+
+const $ = id => document.getElementById(id);
+let currentUser = '';
+let isRaceMode = false;
+let racePeriodText = '';
+let usedFixedAccounts = JSON.parse(localStorage.getItem('usedRaceAccounts') || '{}');
+
+let questionList = [];
+let currentQ = 0;
+let correct = 0;
+let life = 1;
+let timer = null;
+let remain = ANSWER_TIME;
+let selected = -1;
+
+function fmtDate(d) {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const date = String(d.getDate()).padStart(2, '0');
+  const w = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+  return `${year}年${month}月${date}日 周${w}`;
+}
+
+function getPeriodInfo() {
+  const now = new Date();
+  const day = now.getDay();
+  const h = now.getHours();
+  const dateStr = fmtDate(now);
+  let allowed = false;
+  let periodName = '';
+
+  if (day === 5) {
+    if (h >= 6 && h < 20) {
+      allowed = true;
+      periodName = `${dateStr} 06:00~20:00场`;
+    } else if (h >= 20 && h < 24) {
+      allowed = true;
+      periodName = `${dateStr} 20:00~24:00场`;
+    }
+  } else if (day === 6 || day === 0) {
+    if (h >= 8 && h < 12) {
+      allowed = true; periodName = `${dateStr} 08:00~12:00场`;
+    } else if (h >= 12 && h < 16) {
+      allowed = true; periodName = `${dateStr} 12:00~16:00场`;
+    } else if (h >= 16 && h < 20) {
+      allowed = true; periodName = `${dateStr} 16:00~20:00场`;
+    } else if (h >= 20 && h < 24) {
+      allowed = true; periodName = `${dateStr} 20:00~24:00场`;
+    }
+  }
+
+  return { allowed, periodName };
+}
+
+function updateTimeDisplay() {
+  const pi = getPeriodInfo();
+  if (pi.allowed) {
+    $('timeInfo').innerText = pi.periodName;
+  } else {
+    $('timeInfo').innerText = '目前不是挑战模式时间';
+  }
+}
+
+function isFixedAccountUsed(pwd, periodKey) {
+  return usedFixedAccounts[pwd] === periodKey;
+}
+
+function markFixedAccountUsed(pwd, periodKey) {
+  usedFixedAccounts[pwd] = periodKey;
+  localStorage.setItem('usedRaceAccounts', JSON.stringify(usedFixedAccounts));
+}
+
+function isCompetitionPassword(pwd) {
+  return pwd in RACE_FIXED || RACE_FREE.includes(pwd);
+}
+
+function login() {
+  const userInput = $('username').value.trim();
+  const pwd = $('pwd').value.trim();
+  $('loginTip').innerText = '';
+
+  if (!pwd) { $('loginTip').innerText = '请输入活动密码'; return; }
+
+  currentUser = userInput;
+  isRaceMode = false;
+  racePeriodText = '';
+  isCompetitionAccount = isCompetitionPassword(pwd);
+
+  if (pwd === ADMIN_PWD) {
+    $('loginBox').style.display = 'none';
+    $('adminPanel').style.display = 'block';
+    $('questionEditor').value = JSON.stringify(BANK, null, 2);
+    return;
+  }
+
+  const isRacePwd = isCompetitionPassword(pwd);
+  if (isRacePwd) {
+    const pi = getPeriodInfo();
+    if (!pi.allowed) {
+      $('loginTip').innerText = '当前非比赛时间，无法进入';
+      return;
+    }
+    isRaceMode = true;
+    racePeriodText = pi.periodName;
+
+    if (pwd in RACE_FIXED) {
+      const key = pi.periodName;
+      if (isFixedAccountUsed(pwd, key)) {
+        $('loginTip').innerText = '该账号在本场次已使用过，无法重复进入';
+        return;
+      }
+      currentUser = RACE_FIXED[pwd];
+      markFixedAccountUsed(pwd, key);
+    }
+  } else {
+    if (!(pwd in OLD_PASSWORDS) && !(pwd in UNLIMITED_PASS)) {
+      $('loginTip').innerText = '密码不正确';
+      return;
+    }
+  }
+
+  startGame();
+}
+
+function startGame() {
+  $('loginBox').style.display = 'none';
+  $('adminPanel').style.display = 'none';
+  $('endBox').style.display = 'none';
+  $('gameBox').style.display = 'block';
+
+  if (isCompetitionAccount) {
+    document.body.classList.add('competition-mode');
+  } else {
+    document.body.classList.remove('competition-mode');
+  }
+
+  $('userInfo').innerText = `玩家：${currentUser}`;
+  life = 1; correct = 0; currentQ = 0;
+  questionList = shuffle([...BANK]).slice(0, 12);
+  showQuestion();
+}
+
+function goBack() {
+  clearInterval(timer);
+  $('gameBox').style.display = 'none';
+  $('endBox').style.display = 'none';
+  $('adminPanel').style.display = 'none';
+  $('loginBox').style.display = 'block';
+  document.body.classList.remove('competition-mode');
+  updateTimeDisplay();
+}
+
+function showQuestion() {
+  if (currentQ >= questionList.length) {
+    showEnd('挑战完成');
+    return;
+  }
+  selected = -1;
+  remain = ANSWER_TIME;
+  const q = questionList[currentQ];
+  $('question').innerText = `${currentQ + 1}. ${q.q}`;
+
+  const opts = document.querySelectorAll('.option');
+  opts.forEach((el, i) => {
+    el.innerText = q.o[i];
+    el.classList.remove('selected', 'right', 'wrong', 'mask');
+  });
+
+  updateCount();
+  clearInterval(timer);
+  timer = setInterval(() => {
+    remain--;
+    updateCount();
+    if (remain <= 0) {
+      clearInterval(timer);
+      judge();
+    }
+  }, 1000);
+}
+
+function updateCount() {
+  $('countDown').innerText = remain;
+  $('progress').style.width = (remain / ANSWER_TIME * 100) + '%';
+  $('lifeInfo').innerText = `复活卡：${life}`;
+}
+
+function pick(idx) {
+  if (selected !== -1) return;
+  selected = idx;
+  const opts = document.querySelectorAll('.option');
+  opts.forEach(el => el.classList.remove('selected'));
+  opts[idx].classList.add('selected');
+}
+
+function judge() {
+  const q = questionList[currentQ];
+  const opts = document.querySelectorAll('.option');
+  opts.forEach(el => el.classList.add('mask'));
+
+  let isCorrect = false;
+  if (selected === q.a) {
+    opts[selected].classList.add('right');
+    correct++;
+    isCorrect = true;
+  } else {
+    if (selected !== -1) opts[selected].classList.add('wrong');
+    opts[q.a].classList.add('right');
+  }
+
+  setTimeout(() => {
+    if (isCorrect) {
+      currentQ++;
+      showQuestion();
+    } else {
+      life--;
+      if (life < 0) {
+        showEnd('淘汰');
+      } else {
+        currentQ++;
+        showQuestion();
+      }
+    }
+  }, JUDGE_DELAY);
+}
+
+function showEnd(reason) {
+  clearInterval(timer);
+  $('gameBox').style.display = 'none';
+  $('endBox').style.display = 'block';
+  $('endTitle').innerText = reason;
+  $('sName').innerText = currentUser;
+  $('sCorrect').innerText = correct;
+  $('racePeriodTip').innerText = isRaceMode ? `场次：${racePeriodText}` : '';
+  $('sFinal').innerText = reason === '淘汰' ? '很遗憾，挑战结束' : '🎉 挑战完成';
+}
+
+function shuffle(arr) {
+  let a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function saveQuestions() {
+  try {
+    const data = JSON.parse($('questionEditor').value);
+    BANK = data;
+    alert('保存题库成功');
+  } catch (e) {
+    alert('JSON 格式错误，保存失败');
+  }
+}
+
+function copyFullCode() {
+  const html = document.documentElement.outerHTML;
+  navigator.clipboard.writeText(html).then(() => alert('已复制完整代码'));
+}
+
+updateTimeDisplay();
+</script>
+</body>
+</html>
