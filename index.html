@@ -17,6 +17,9 @@ body{background:#0b0f1e;color:#fff}
 .user-text{color:#a0a8c8;font-size:15px}
 .life{color:#ffde55}
 .count-down{font-size:22px;font-weight:700;color:#ffde55}
+.race-tag{
+  background:#ff4380;color:#fff;padding:4px 10px;border-radius:8px;font-size:14px;font-weight:bold;
+}
 .progress-bar{width:100%;height:8px;background:#1e253e;border-radius:4px;margin:10px 0;overflow:hidden}
 .progress-line{height:100%;background:linear-gradient(90deg,#ff4380,#fa7250);width:100%;transition:.1s linear}
 .question-box{background:#12172b;border-radius:20px;padding:28px;margin-top:10px}
@@ -44,6 +47,9 @@ body{background:#0b0f1e;color:#fff}
 .end h2{font-size:26px;color:#f9e488;margin-bottom:20px}
 .end p{color:#c0c8e7;font-size:16px;margin:6px 0}
 .end .final{color:#ffde55;font-size:18px;margin:20px 0}
+.end .race-auth{
+  display:inline-block;background:#ffc107;color:#000;padding:6px 14px;border-radius:10px;font-weight:bold;margin-top:10px;
+}
 .end button{background:linear-gradient(90deg,#ff4380,#fa7250);border:none;border-radius:14px;color:#fff;padding:14px 32px;font-size:16px;margin-top:10px}
 </style>
 </head>
@@ -62,6 +68,7 @@ body{background:#0b0f1e;color:#fff}
   <div class="game" id="gameBox">
     <div class="top-bar">
       <div class="user-text" id="userInfo"></div>
+      <div class="race-tag" id="raceTag" style="display:none;">比赛模式</div>
       <div class="life" id="lifeInfo">复活卡：1</div>
       <div class="count-down" id="countDown">12</div>
     </div>
@@ -102,6 +109,7 @@ body{background:#0b0f1e;color:#fff}
     <p>昵称：<span id="sName"></span></p>
     <p>答对题数：<span id="sCorrect"></span></p>
     <p id="racePeriodTip" style="margin-top:10px;color:#ffde55"></p>
+    <div class="race-auth" id="raceAuth" style="display:none;"></div>
     <div class="final" id="sFinal"></div>
     <button onclick="goBack()">返回</button>
   </div>
@@ -157,7 +165,67 @@ const UNLIMITED_CODE = "jingchen";
 
 let isCompetitionAccount = false;
 let BANK = [
-{q:"水的化学式是？",o:["H2O","CO2","O2","H2"],a:0},
+{q:"牛顿第一定律又称？",o:["惯性定律","加速度定律","作用力定律","万有引力定律"],a:0},
+{q:"平抛运动可分解为？",o:["水平匀速+竖直自由落体","水平匀加速+竖直匀速","水平匀减速+竖直上抛","均为匀速"],a:0},
+{q:"动能定理：合外力做功等于？",o:["动能变化量","势能变化量","机械能变化量","动量变化量"],a:0},
+{q:"库仑定律描述的是？",o:["点电荷间作用力","磁场力","重力","弹力"],a:0},
+{q:"楞次定律判断？",o:["感应电流方向","感应电流大小","电场强度","磁感应强度"],a:0},
+{q:"理想变压器电压比等于？",o:["匝数比","电流比","功率比","电阻比"],a:0},
+{q:"光的干涉证明光具有？",o:["波动性","粒子性","直线传播","折射性"],a:0},
+{q:"氢原子能级跃迁时，辐射光子能量ΔE=？",o:["E高-E低","E低-E高","hν","mc²"],a:0},
+{q:"动量守恒的条件是？",o:["合外力为零","合外力做功为零","合外力矩为零","机械能守恒"],a:0},
+{q:"电场强度E的单位是？",o:["N/C","V","A","Ω"],a:0},
+{q:"氧化还原反应的本质是？",o:["电子转移","化合价升降","原子重组","分子破裂"],a:0},
+{q:"元素周期表中，同周期从左到右金属性？",o:["减弱","增强","不变","先增后减"],a:0},
+{q:"弱电解质的电离是？",o:["可逆过程","完全电离","不可逆","瞬间完成"],a:0},
+{q:"盐类水解使溶液呈酸碱性的原因是？",o:["破坏水的电离平衡","生成沉淀","放出气体","氧化还原"],a:0},
+{q:"原电池的负极发生？",o:["氧化反应","还原反应","置换反应","复分解反应"],a:0},
+{q:"化学反应速率与什么无关？",o:["产量","浓度","温度","催化剂"],a:0},
+{q:"乙烯的官能团是？",o:["碳碳双键","羟基","羧基","醛基"],a:0},
+{q:"乙醇的官能团是？",o:["-OH","-COOH","-CHO","-COO-"],a:0},
+{q:"酯化反应的条件是？",o:["浓硫酸、加热","稀硫酸、常温","光照","通电"],a:0},
+{q:"阿伏伽德罗常数NA约为？",o:["6.02×10²³","6.02×10²²","3.01×10²³","1.6×10⁻¹⁹"],a:0},
+{q:"细胞的基本结构不包括？",o:["细胞壁","细胞膜","细胞质","细胞核"],a:0},
+{q:"光合作用的场所是？",o:["叶绿体","线粒体","核糖体","内质网"],a:0},
+{q:"有氧呼吸的主要场所是？",o:["线粒体","叶绿体","细胞质基质","细胞核"],a:0},
+{q:"细胞分裂间期主要进行？",o:["DNA复制和蛋白质合成","染色体分离","细胞质分裂","核膜消失"],a:0},
+{q:"减数分裂产生的是？",o:["配子","体细胞","受精卵","干细胞"],a:0},
+{q:"DNA的基本组成单位是？",o:["脱氧核苷酸","核糖核苷酸","氨基酸","葡萄糖"],a:0},
+{q:"基因的表达包括？",o:["转录和翻译","复制和转录","复制和翻译","逆转录"],a:0},
+{q:"现代生物进化理论的核心是？",o:["自然选择学说","用进废退","神创论","突变论"],a:0},
+{q:"内环境稳态的调节机制是？",o:["神经-体液-免疫调节","神经调节","体液调节","免疫调节"],a:0},
+{q:"生态系统的能量流动特点是？",o:["单向流动、逐级递减","循环流动、逐级递增","双向流动、保持不变","循环流动、逐级递减"],a:0},
+{q:"我国的国体是？",o:["人民民主专政","人民代表大会制度","中国共产党领导","多党合作制"],a:0},
+{q:"我国的政体是？",o:["人民代表大会制度","民主集中制","政治协商制度","基层群众自治"],a:0},
+{q:"商品的基本属性是？",o:["使用价值和价值","价格和价值","交换价值和价格","使用价值和价格"],a:0},
+{q:"货币的本质是？",o:["一般等价物","商品","金银","纸币"],a:0},
+{q:"市场经济的基础是？",o:["市场在资源配置中起决定性作用","计划配置","政府主导","宏观调控"],a:0},
+{q:"公民的基本政治权利是？",o:["选举权和被选举权","言论自由","监督权","政治自由"],a:0},
+{q:"我国外交政策的宗旨是？",o:["维护世界和平、促进共同发展","独立自主","和平共处五项原则","维护国家利益"],a:0},
+{q:"哲学的基本问题是？",o:["思维和存在的关系问题","物质和运动的关系","辩证法和形而上学","唯物主义和唯心主义"],a:0},
+{q:"实践是认识的？",o:["唯一来源","唯一标准","最终目的","根本动力"],a:0},
+{q:"人生价值的真正意义在于？",o:["对社会的责任和贡献","获取个人利益","实现自我价值","追求物质享受"],a:0},
+{q:"夏朝的建立者是？",o:["禹","启","桀","汤"],a:0},
+{q:"商鞅变法发生在？",o:["战国时期","春秋时期","秦朝","汉朝"],a:0},
+{q:"秦始皇统一全国的时间是？",o:["公元前221年","公元前202年","公元221年","公元202年"],a:0},
+{q:"科举制创立于？",o:["隋朝","唐朝","宋朝","明朝"],a:0},
+{q:"安史之乱发生在？",o:["唐朝","隋朝","宋朝","明朝"],a:0},
+{q:"辛亥革命的指导思想是？",o:["三民主义","民主科学","变法图强","马克思主义"],a:0},
+{q:"五四运动爆发于？",o:["1919年","1911年","1921年","1949年"],a:0},
+{q:"新中国成立于？",o:["1949年10月1日","1945年8月15日","1912年1月1日","1978年12月"],a:0},
+{q:"文艺复兴的核心是？",o:["人文主义","理性主义","自由主义","社会主义"],a:0},
+{q:"工业革命开始于？",o:["18世纪60年代","19世纪70年代","20世纪初","17世纪"],a:0},
+{q:"地球的平均半径约为？",o:["6371千米","6378千米","6357千米","40000千米"],a:0},
+{q:"地球自转的方向是？",o:["自西向东","自东向西","自南向北","自北向南"],a:0},
+{q:"夏至日太阳直射？",o:["北回归线","南回归线","赤道","北极圈"],a:0},
+{q:"大气的主要成分是？",o:["氮气和氧气","氧气和二氧化碳","氮气和二氧化碳","氧气和臭氧"],a:0},
+{q:"水循环的主要动力是？",o:["太阳辐射","地球引力","风力","生物作用"],a:0},
+{q:"世界上最大的沙漠是？",o:["撒哈拉沙漠","阿拉伯沙漠","利比亚沙漠","澳大利亚沙漠"],a:0},
+{q:"我国地势特点是？",o:["西高东低，呈三级阶梯","东高西低，呈三级阶梯","南高北低，呈三级阶梯","北高南低，呈三级阶梯"],a:0},
+{q:"我国最大的淡水湖是？",o:["鄱阳湖","洞庭湖","太湖","洪泽湖"],a:0},
+{q:"城市化的主要标志是？",o:["城市人口占总人口比重上升","城市数量增加","城市用地规模扩大","城市人口增加"],a:0},
+{q:"可持续发展的核心是？",o:["生态持续发展","经济持续发展","社会持续发展","人口持续发展"],a:0}
+  {q:"水的化学式是？",o:["H2O","CO2","O2","H2"],a:0},
 {q:"地球自转一圈大约是？",o:["1小时","1天","1月","1年"],a:1},
 {q:"下列哪个是金属元素？",o:["氧","铁","碳","氢"],a:1},
 {q:"声音在以下哪种介质中传播最快？",o:["空气","水","真空","钢铁"],a:3},
@@ -405,78 +473,6 @@ let BANK = [
 {q:"单词‘benefit’表示？",o:["益处","伤害","损失","负担"],a:0},
 {q:"单词‘consequence’意为？",o:["结果","原因","条件","方式"],a:0},
 {q:"英语中，‘然而’的连接词是？",o:["however","therefore","besides","thus"],a:0},
-
-// 高中物理
-{q:"牛顿第一定律又称？",o:["惯性定律","加速度定律","作用力定律","万有引力定律"],a:0},
-{q:"平抛运动可分解为？",o:["水平匀速+竖直自由落体","水平匀加速+竖直匀速","水平匀减速+竖直上抛","均为匀速"],a:0},
-{q:"动能定理：合外力做功等于？",o:["动能变化量","势能变化量","机械能变化量","动量变化量"],a:0},
-{q:"库仑定律描述的是？",o:["点电荷间作用力","磁场力","重力","弹力"],a:0},
-{q:"楞次定律判断？",o:["感应电流方向","感应电流大小","电场强度","磁感应强度"],a:0},
-{q:"理想变压器电压比等于？",o:["匝数比","电流比","功率比","电阻比"],a:0},
-{q:"光的干涉证明光具有？",o:["波动性","粒子性","直线传播","折射性"],a:0},
-{q:"氢原子能级跃迁时，辐射光子能量ΔE=？",o:["E高-E低","E低-E高","hν","mc²"],a:0},
-{q:"动量守恒的条件是？",o:["合外力为零","合外力做功为零","合外力矩为零","机械能守恒"],a:0},
-{q:"电场强度E的单位是？",o:["N/C","V","A","Ω"],a:0},
-
-// 高中化学
-{q:"氧化还原反应的本质是？",o:["电子转移","化合价升降","原子重组","分子破裂"],a:0},
-{q:"元素周期表中，同周期从左到右金属性？",o:["减弱","增强","不变","先增后减"],a:0},
-{q:"弱电解质的电离是？",o:["可逆过程","完全电离","不可逆","瞬间完成"],a:0},
-{q:"盐类水解使溶液呈酸碱性的原因是？",o:["破坏水的电离平衡","生成沉淀","放出气体","氧化还原"],a:0},
-{q:"原电池的负极发生？",o:["氧化反应","还原反应","置换反应","复分解反应"],a:0},
-{q:"化学反应速率与什么无关？",o:["产量","浓度","温度","催化剂"],a:0},
-{q:"乙烯的官能团是？",o:["碳碳双键","羟基","羧基","醛基"],a:0},
-{q:"乙醇的官能团是？",o:["-OH","-COOH","-CHO","-COO-"],a:0},
-{q:"酯化反应的条件是？",o:["浓硫酸、加热","稀硫酸、常温","光照","通电"],a:0},
-{q:"阿伏伽德罗常数NA约为？",o:["6.02×10²³","6.02×10²²","3.01×10²³","1.6×10⁻¹⁹"],a:0},
-
-// 高中生物
-{q:"细胞的基本结构不包括？",o:["细胞壁","细胞膜","细胞质","细胞核"],a:0},
-{q:"光合作用的场所是？",o:["叶绿体","线粒体","核糖体","内质网"],a:0},
-{q:"有氧呼吸的主要场所是？",o:["线粒体","叶绿体","细胞质基质","细胞核"],a:0},
-{q:"细胞分裂间期主要进行？",o:["DNA复制和蛋白质合成","染色体分离","细胞质分裂","核膜消失"],a:0},
-{q:"减数分裂产生的是？",o:["配子","体细胞","受精卵","干细胞"],a:0},
-{q:"DNA的基本组成单位是？",o:["脱氧核苷酸","核糖核苷酸","氨基酸","葡萄糖"],a:0},
-{q:"基因的表达包括？",o:["转录和翻译","复制和转录","复制和翻译","逆转录"],a:0},
-{q:"现代生物进化理论的核心是？",o:["自然选择学说","用进废退","神创论","突变论"],a:0},
-{q:"内环境稳态的调节机制是？",o:["神经-体液-免疫调节","神经调节","体液调节","免疫调节"],a:0},
-{q:"生态系统的能量流动特点是？",o:["单向流动、逐级递减","循环流动、逐级递增","双向流动、保持不变","循环流动、逐级递减"],a:0},
-
-// 高中政治
-{q:"我国的国体是？",o:["人民民主专政","人民代表大会制度","中国共产党领导","多党合作制"],a:0},
-{q:"我国的政体是？",o:["人民代表大会制度","民主集中制","政治协商制度","基层群众自治"],a:0},
-{q:"商品的基本属性是？",o:["使用价值和价值","价格和价值","交换价值和价格","使用价值和价格"],a:0},
-{q:"货币的本质是？",o:["一般等价物","商品","金银","纸币"],a:0},
-{q:"市场经济的基础是？",o:["市场在资源配置中起决定性作用","计划配置","政府主导","宏观调控"],a:0},
-{q:"公民的基本政治权利是？",o:["选举权和被选举权","言论自由","监督权","政治自由"],a:0},
-{q:"我国外交政策的宗旨是？",o:["维护世界和平、促进共同发展","独立自主","和平共处五项原则","维护国家利益"],a:0},
-{q:"哲学的基本问题是？",o:["思维和存在的关系问题","物质和运动的关系","辩证法和形而上学","唯物主义和唯心主义"],a:0},
-{q:"实践是认识的？",o:["唯一来源","唯一标准","最终目的","根本动力"],a:0},
-{q:"人生价值的真正意义在于？",o:["对社会的责任和贡献","获取个人利益","实现自我价值","追求物质享受"],a:0},
-
-// 高中历史
-{q:"夏朝的建立者是？",o:["禹","启","桀","汤"],a:0},
-{q:"商鞅变法发生在？",o:["战国时期","春秋时期","秦朝","汉朝"],a:0},
-{q:"秦始皇统一全国的时间是？",o:["公元前221年","公元前202年","公元221年","公元202年"],a:0},
-{q:"科举制创立于？",o:["隋朝","唐朝","宋朝","明朝"],a:0},
-{q:"安史之乱发生在？",o:["唐朝","隋朝","宋朝","明朝"],a:0},
-{q:"辛亥革命的指导思想是？",o:["三民主义","民主科学","变法图强","马克思主义"],a:0},
-{q:"五四运动爆发于？",o:["1919年","1911年","1921年","1949年"],a:0},
-{q:"新中国成立于？",o:["1949年10月1日","1945年8月15日","1912年1月1日","1978年12月"],a:0},
-{q:"文艺复兴的核心是？",o:["人文主义","理性主义","自由主义","社会主义"],a:0},
-{q:"工业革命开始于？",o:["18世纪60年代","19世纪70年代","20世纪初","17世纪"],a:0},
-
-// 高中地理
-{q:"地球的平均半径约为？",o:["6371千米","6378千米","6357千米","40000千米"],a:0},
-{q:"地球自转的方向是？",o:["自西向东","自东向西","自南向北","自北向南"],a:0},
-{q:"夏至日太阳直射？",o:["北回归线","南回归线","赤道","北极圈"],a:0},
-{q:"大气的主要成分是？",o:["氮气和氧气","氧气和二氧化碳","氮气和二氧化碳","氧气和臭氧"],a:0},
-{q:"水循环的主要动力是？",o:["太阳辐射","地球引力","风力","生物作用"],a:0},
-{q:"世界上最大的沙漠是？",o:["撒哈拉沙漠","阿拉伯沙漠","利比亚沙漠","澳大利亚沙漠"],a:0},
-{q:"我国地势特点是？",o:["西高东低，呈三级阶梯","东高西低，呈三级阶梯","南高北低，呈三级阶梯","北高南低，呈三级阶梯"],a:0},
-{q:"我国最大的淡水湖是？",o:["鄱阳湖","洞庭湖","太湖","洪泽湖"],a:0},
-{q:"城市化的主要标志是？",o:["城市人口占总人口比重上升","城市数量增加","城市用地规模扩大","城市人口增加"],a:0},
-{q:"可持续发展的核心是？",o:["生态持续发展","经济持续发展","社会持续发展","人口持续发展"],a:0}
 ];
 
 const $ = id => document.getElementById(id);
@@ -538,7 +534,6 @@ function checkAndConsumeCode(code) {
   return true;
 }
 
-// 管理员界面
 function showAdminMenu() {
   $('adminMenu').style.display = 'block';
   $('editQuestionsSection').style.display = 'none';
@@ -564,17 +559,14 @@ function showResetRacePanel() {
   $('adminMenu').style.display = 'none';
   $('editQuestionsSection').style.display = 'none';
   $('resetRaceSection').style.display = 'block';
-
   const pi = getPeriodInfo();
   const currentKey = pi.periodName;
   const container = $('usedAccountsContainer');
   container.innerHTML = '';
-
   if (!currentKey) {
     container.innerHTML = '<div class="account-item">不在比赛时段</div>';
     return;
   }
-
   const list = [];
   for (let pwd in usedFixedAccounts) {
     if (usedFixedAccounts[pwd] === currentKey) {
@@ -582,12 +574,10 @@ function showResetRacePanel() {
       list.push({ pwd, name });
     }
   }
-
   if (list.length === 0) {
     container.innerHTML = '<div class="account-item">本场暂无使用账号</div>';
     return;
   }
-
   list.forEach(item => {
     let div = document.createElement('div');
     div.className = 'account-item';
@@ -611,7 +601,6 @@ function saveQuestions() {
   }
 }
 
-// 登录
 function login() {
   const userInput = $('username').value.trim();
   const pwd = $('pwd').value.trim();
@@ -624,7 +613,6 @@ function login() {
   racePeriodText = '';
   isCompetitionAccount = isCompetitionPassword(pwd);
 
-  // 管理员入口
   if (pwd === ADMIN_PWD) {
     $('loginBox').style.display = 'none';
     $('adminPanel').style.display = 'block';
@@ -649,6 +637,7 @@ function login() {
     if (!(pwd in OLD_PASSWORDS) && !(pwd in UNLIMITED_PASS)) { $('loginTip').innerText = '密码不正确'; return; }
   }
 
+  // 修复：非挑战模式复活卡默认生效
   if (isRaceMode) {
     life = checkAndConsumeCode(reviveInput) ? 1 : 0;
   } else {
@@ -658,13 +647,21 @@ function login() {
   startGame();
 }
 
-// 游戏逻辑
 function startGame() {
   $('loginBox').style.display = 'none';
   $('adminPanel').style.display = 'none';
   $('endBox').style.display = 'none';
   $('gameBox').style.display = 'block';
-  isCompetitionAccount ? document.body.classList.add('competition-mode') : document.body.classList.remove('competition-mode');
+  
+  // 比赛模式顶部标签
+  if (isRaceMode) {
+    document.body.classList.add('competition-mode');
+    $('raceTag').style.display = 'inline-block';
+  } else {
+    document.body.classList.remove('competition-mode');
+    $('raceTag').style.display = 'none';
+  }
+
   $('userInfo').innerText = `玩家：${currentUser}`;
   correct = 0; currentQ = 0;
   questionList = shuffle([...BANK]).slice(0, 12);
@@ -745,12 +742,33 @@ function showEnd(title) {
   $('endTitle').innerText = title;
   $('sName').innerText = currentUser;
   $('sCorrect').innerText = correct;
-  if (isRaceMode) {
-    $('racePeriodTip').innerText = `场次：${racePeriodText}`;
+
+  // 参赛时段
+  if (isRaceMode && racePeriodText) {
+    $('racePeriodTip').innerText = `参赛时段：${racePeriodText}`;
   } else {
     $('racePeriodTip').innerText = '';
   }
-  let finalText = correct >= 10 ? '优秀！' : correct >= 6 ? '不错！' : '加油！';
+
+  // 比赛模式认证栏
+  if (isRaceMode) {
+    $('raceAuth').style.display = 'inline-block';
+    $('raceAuth').innerText = '比赛模式认证';
+  } else {
+    $('raceAuth').style.display = 'none';
+  }
+
+  // 答对12题提示
+  let finalText;
+  if (correct >= 12) {
+    finalText = "请截图给景晨";
+  } else if (correct >= 10) {
+    finalText = "优秀！";
+  } else if (correct >= 6) {
+    finalText = "不错！";
+  } else {
+    finalText = "加油！";
+  }
   $('sFinal').innerText = finalText;
 }
 
@@ -762,7 +780,6 @@ function shuffle(arr) {
   return arr;
 }
 
-// 初始化
 updateTimeDisplay();
 </script>
 </body>
