@@ -6,15 +6,15 @@
 <title>星星的密室日常活动——百币英雄</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:PingFang SC,Microsoft YaHei,sans-serif}
-body{background:#0b0f1e;color:#fff}
+body{background:#0b0b1e;color:#fff}
 .main{max-width:700px;margin:0 auto;padding:20px;min-height:100vh}
-.game{display:none;background:#0b0f1e;position:relative}
+.game{display:none;background:#0b0b1e;position:relative}
 .competition-mode .game{
   display:block;
   background: linear-gradient(90deg, #ffc107 0%, #ffc107 50%, #9c27b0 50%, #9c27b0 100%);
 }
 .top-bar{display:flex;justify-content:space-between;align-items:center;padding:10px 0}
-.user-text{color:#a0a8c8;font-size:15px}
+.user-text{color:#aab8c7;font-size:15px}
 .life{color:#ffde55}
 .count-down{font-size:22px;font-weight:700;color:#ffde55}
 .race-tag{
@@ -39,7 +39,11 @@ body{background:#0b0f1e;color:#fff}
 .admin{display:none;background:#12172b;border-radius:20px;padding:30px;margin-top:20px}
 .admin h3{color:#f9e488;margin-bottom:15px}
 .admin textarea{width:100%;height:300px;background:#1b223a;color:#fff;border-radius:8px;padding:10px;font-size:14px;margin-bottom:10px}
-.admin button{background:#6250ff;color:#fff;border:none;border-radius:10px;padding:10px 16px;margin-right:10px;margin-bottom:10px}
+.admin button{
+  background:#6250ff;color:#fff;border:none;border-radius:10px;padding:10px 16px;
+  margin-right:10px;margin-bottom:10px;cursor:pointer;font-weight:bold
+}
+.admin .danger{background:#c92e2e}
 .admin .account-item{padding:10px 14px;background:#1b223a;border-radius:8px;margin-bottom:8px;cursor:pointer}
 .admin .account-item:hover{background:#253252}
 
@@ -86,7 +90,8 @@ body{background:#0b0f1e;color:#fff}
     <div id="adminMenu">
       <h3>管理员面板</h3>
       <button onclick="showEditQuestions()">修改题目</button>
-      <button onclick="showResetRacePanel()">重置比赛权利</button>
+      <button onclick="showResetRacePanel()">重置比赛账号</button>
+      <button onclick="showResetCodePanel()">重置复活密钥</button>
       <button onclick="exitAdmin()">返回登录</button>
     </div>
 
@@ -100,7 +105,15 @@ body{background:#0b0f1e;color:#fff}
     <div id="resetRaceSection" style="display:none">
       <h3>本场已使用比赛账号（点击重置）</h3>
       <div id="usedAccountsContainer"></div>
-      <button onclick="backToAdminMenu()" style="margin-top:15px">返回</button>
+      <button onclick="backToAdminMenu()">返回</button>
+    </div>
+
+    <!-- 新增：复活密钥重置面板 -->
+    <div id="resetCodeSection" style="display:none">
+      <h3>复活密钥管理</h3>
+      <p style="margin-bottom:14px;color:#ccc;">点击下方按钮将清空所有一次性密钥的使用记录，所有密钥恢复可使用状态。</p>
+      <button class="danger" onclick="resetAllUsedCodes()">重置所有一次性复活密钥</button>
+      <button onclick="backToAdminMenu()">返回</button>
     </div>
   </div>
 
@@ -315,40 +328,45 @@ function isFixedAccountUsed(pwd, key) { return usedFixedAccounts[pwd] === key; }
 function markFixedAccountUsed(pwd, key) { usedFixedAccounts[pwd] = key; localStorage.setItem('usedRaceAccounts', JSON.stringify(usedFixedAccounts)); }
 function isCompetitionPassword(pwd) { return pwd in RACE_FIXED || RACE_FREE.includes(pwd); }
 
+// 密钥逻辑：jingchen 无限，其他一次性
 function checkAndConsumeCode(code) {
-  if (code === UNLIMITED_CODE) return true;
-  if (!SINGLE_USE_CODES.has(code)) return false;
-  if (usedCodes.includes(code)) return false;
-  usedCodes.push(code);
+  const cleanCode = code.trim().toLowerCase();
+  if (cleanCode === UNLIMITED_CODE.toLowerCase()) return true;
+
+  if (!SINGLE_USE_CODES.has(cleanCode)) return false;
+  if (usedCodes.includes(cleanCode)) return false;
+
+  // 标记一次性密钥已使用
+  usedCodes.push(cleanCode);
   localStorage.setItem('usedReviveCodes', JSON.stringify(usedCodes));
   return true;
+}
+
+// 新增：重置所有一次性复活密钥
+function resetAllUsedCodes() {
+  if (!confirm('确定要重置所有一次性复活密钥吗？所有用过的密钥将恢复可用。')) return;
+  usedCodes = [];
+  localStorage.setItem('usedReviveCodes', JSON.stringify(usedCodes));
+  alert('已重置所有一次性复活密钥！');
 }
 
 function showAdminMenu() {
   $('adminMenu').style.display = 'block';
   $('editQuestionsSection').style.display = 'none';
   $('resetRaceSection').style.display = 'none';
+  $('resetCodeSection').style.display = 'none';
 }
 function showEditQuestions() {
   $('adminMenu').style.display = 'none';
   $('editQuestionsSection').style.display = 'block';
   $('resetRaceSection').style.display = 'none';
-  $('questionEditor').value = JSON.stringify(BANK, null, 2);
+  $('resetCodeSection').style.display = 'none';
 }
-function backToAdminMenu() {
-  $('adminMenu').style.display = 'block';
-  $('editQuestionsSection').style.display = 'none';
-  $('resetRaceSection').style.display = 'none';
-}
-function exitAdmin() {
-  $('adminPanel').style.display = 'none';
-  $('loginBox').style.display = 'block';
-}
-
 function showResetRacePanel() {
   $('adminMenu').style.display = 'none';
   $('editQuestionsSection').style.display = 'none';
   $('resetRaceSection').style.display = 'block';
+  $('resetCodeSection').style.display = 'none';
   const pi = getPeriodInfo();
   const currentKey = pi.periodName;
   const container = $('usedAccountsContainer');
@@ -375,11 +393,27 @@ function showResetRacePanel() {
     div.onclick = () => {
       delete usedFixedAccounts[item.pwd];
       localStorage.setItem('usedRaceAccounts', JSON.stringify(usedFixedAccounts));
-      alert(`已重置：${item.name}，可重新参赛`);
+      alert(`已重置：${item.name}`);
       showResetRacePanel();
     };
     container.appendChild(div);
   });
+}
+
+// 新增：打开密钥重置面板
+function showResetCodePanel() {
+  $('adminMenu').style.display = 'none';
+  $('editQuestionsSection').style.display = 'none';
+  $('resetRaceSection').style.display = 'none';
+  $('resetCodeSection').style.display = 'block';
+}
+
+function backToAdminMenu() {
+  showAdminMenu();
+}
+function exitAdmin() {
+  $('adminPanel').style.display = 'none';
+  $('loginBox').style.display = 'block';
 }
 
 function saveQuestions() {
@@ -387,7 +421,7 @@ function saveQuestions() {
     BANK = JSON.parse($('questionEditor').value);
     alert('题库保存成功！');
   } catch(e) {
-    alert('JSON格式错误，请检查！');
+    alert('JSON格式错误！');
   }
 }
 
@@ -451,7 +485,8 @@ function startGame() {
   }
 
   $('userInfo').innerText = `玩家：${currentUser}`;
-  correct = 0; currentQ = 0;
+  currentQ = 0;
+  correct = 0;
   questionList = shuffle([...BANK]).slice(0, 12);
   showQuestion();
 }
@@ -512,8 +547,8 @@ function judge() {
       currentQ++;
       showQuestion();
     } else {
-      life--;
       if (life > 0) {
+        life--;
         currentQ++;
         showQuestion();
       } else {
@@ -569,3 +604,4 @@ updateTimeDisplay();
 </script>
 </body>
 </html>
+
