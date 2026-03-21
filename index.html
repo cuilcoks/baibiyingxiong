@@ -6,78 +6,15 @@
 <title>星星的密室日常活动——百币英雄</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:PingFang SC,Microsoft YaHei,sans-serif}
-body{background:#0b0f1e;color:#fff}
+body{background:#0b0b1e;color:#fff}
 .main{max-width:700px;margin:0 auto;padding:20px;min-height:100vh}
-
-/* 公告样式 */
-.notice{
-  background:#1a223a;
-  border-left:4px solid #ffc107;
-  padding:12px 16px;
-  border-radius:10px;
-  margin-bottom:16px;
-  font-size:15px;
-  line-height:1.5;
-}
-.notice-time{
-  color:#ffde55;
-  font-weight:bold;
-  margin-right:8px;
-}
-
-/* 排行榜样式 */
-.rank-box{
-  background:#12172b;
-  border-radius:16px;
-  padding:20px;
-  margin-top:20px;
-}
-.rank-box h3{
-  color:#f9e488;
-  font-size:18px;
-  margin-bottom:14px;
-  text-align:center;
-}
-.rank-item{
-  display:flex;
-  align-items:center;
-  padding:10px 12px;
-  background:#1b223a;
-  border-radius:10px;
-  margin-bottom:8px;
-  font-size:15px;
-}
-.rank-no{
-  width:32px;height:32px;
-  background:#ff4380;color:#fff;
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-weight:bold;margin-right:12px;
-}
-.rank-name{flex:1;}
-.rank-score{margin-right:12px;font-weight:bold;color:#ffde55;}
-.rank-revive{color:#ccc;font-size:13px;}
-
-/* 底部周期主题 */
-.period-theme{
-  margin-top:30px;
-  padding:16px;
-  background:#12172b;
-  border-radius:12px;
-  text-align:center;
-  font-size:15px;
-  line-height:1.7;
-}
-.period-theme strong{color:#f9e488;}
-.theme-content{color:#c0c8e7;margin-top:4px;}
-
-.game{display:none;background:#0b0f1e;position:relative}
+.game{display:none;background:#0b0b1e;position:relative}
 .competition-mode .game{
   display:block;
   background: linear-gradient(90deg, #ffc107 0%, #ffc107 50%, #9c27b0 50%, #9c27b0 100%);
 }
 .top-bar{display:flex;justify-content:space-between;align-items:center;padding:10px 0}
-.user-text{color:#a0a8c8;font-size:15px}
+.user-text{color:#aab8c7;font-size:15px}
 .life{color:#ffde55}
 .count-down{font-size:22px;font-weight:700;color:#ffde55}
 .race-tag{
@@ -101,12 +38,12 @@ body{background:#0b0f1e;color:#fff}
 
 .admin{display:none;background:#12172b;border-radius:20px;padding:30px;margin-top:20px}
 .admin h3{color:#f9e488;margin-bottom:15px}
-.admin textarea{width:100%;height:160px;background:#1b223a;color:#fff;border-radius:8px;padding:10px;font-size:14px;margin-bottom:10px}
-.admin input.theme-input{
-  width:100%;height:46px;background:#1b223a;color:#fff;border-radius:8px;padding:0 12px;margin-bottom:10px;
-  border:none;font-size:15px;
+.admin textarea{width:100%;height:300px;background:#1b223a;color:#fff;border-radius:8px;padding:10px;font-size:14px;margin-bottom:10px}
+.admin button{
+  background:#6250ff;color:#fff;border:none;border-radius:10px;padding:10px 16px;
+  margin-right:10px;margin-bottom:10px;cursor:pointer;font-weight:bold
 }
-.admin button{background:#6250ff;color:#fff;border:none;border-radius:10px;padding:10px 16px;margin-right:10px;margin-bottom:10px}
+.admin .danger{background:#c92e2e}
 .admin .account-item{padding:10px 14px;background:#1b223a;border-radius:8px;margin-bottom:8px;cursor:pointer}
 .admin .account-item:hover{background:#253252}
 
@@ -122,13 +59,6 @@ body{background:#0b0f1e;color:#fff}
 </head>
 <body>
 <div class="main">
-
-  <!-- 公告区域 -->
-  <div class="notice" id="noticeBox">
-    <span class="notice-time" id="noticeTime">加载中...</span>
-    <span id="noticeContent">公告加载中...</span>
-  </div>
-
   <div class="login" id="loginBox">
     <h2>星星的密室日常活动——百币英雄</h2>
     <input type="text" id="username" placeholder="请输入昵称">
@@ -137,12 +67,6 @@ body{background:#0b0f1e;color:#fff}
     <button onclick="login()">开始挑战</button>
     <div class="tip" id="loginTip"></div>
     <div class="time-info" id="timeInfo"></div>
-  </div>
-
-  <!-- 排行榜 -->
-  <div class="rank-box" id="rankBox">
-    <h3>🏅 当前时段比赛排行榜</h3>
-    <div id="rankList"></div>
   </div>
 
   <div class="game" id="gameBox">
@@ -166,9 +90,8 @@ body{background:#0b0f1e;color:#fff}
     <div id="adminMenu">
       <h3>管理员面板</h3>
       <button onclick="showEditQuestions()">修改题目</button>
-      <button onclick="showEditNotice()">修改公告</button>
-      <button onclick="showEditTheme()">设置活动主题</button>
-      <button onclick="showResetRacePanel()">重置比赛权利</button>
+      <button onclick="showResetRacePanel()">重置比赛账号</button>
+      <button onclick="showResetCodePanel()">重置复活密钥</button>
       <button onclick="exitAdmin()">返回登录</button>
     </div>
 
@@ -179,26 +102,18 @@ body{background:#0b0f1e;color:#fff}
       <button onclick="backToAdminMenu()">返回</button>
     </div>
 
-    <div id="editNoticeSection" style="display:none">
-      <h3>修改公告</h3>
-      <input type="text" id="noticeTimeInput" placeholder="公告时间" class="theme-input">
-      <textarea id="noticeContentInput" placeholder="公告内容"></textarea>
-      <button onclick="saveNotice()">保存公告</button>
-      <button onclick="backToAdminMenu()">返回</button>
-    </div>
-
-    <div id="editThemeSection" style="display:none">
-      <h3>设置活动主题</h3>
-      <input type="text" id="themeTitleInput" placeholder="主题名称" class="theme-input">
-      <textarea id="themeContentInput" placeholder="主题详细内容"></textarea>
-      <button onclick="saveTheme()">保存主题</button>
-      <button onclick="backToAdminMenu()">返回</button>
-    </div>
-
     <div id="resetRaceSection" style="display:none">
       <h3>本场已使用比赛账号（点击重置）</h3>
       <div id="usedAccountsContainer"></div>
-      <button onclick="backToAdminMenu()" style="margin-top:15px">返回</button>
+      <button onclick="backToAdminMenu()">返回</button>
+    </div>
+
+    <!-- 新增：复活密钥重置面板 -->
+    <div id="resetCodeSection" style="display:none">
+      <h3>复活密钥管理</h3>
+      <p style="margin-bottom:14px;color:#ccc;">点击下方按钮将清空所有一次性密钥的使用记录，所有密钥恢复可使用状态。</p>
+      <button class="danger" onclick="resetAllUsedCodes()">重置所有一次性复活密钥</button>
+      <button onclick="backToAdminMenu()">返回</button>
     </div>
   </div>
 
@@ -211,36 +126,9 @@ body{background:#0b0f1e;color:#fff}
     <div class="final" id="sFinal"></div>
     <button onclick="goBack()">返回</button>
   </div>
-
-  <!-- 底部周期 & 主题 -->
-  <div class="period-theme" id="periodThemeBox">
-    <div>目前比赛周期：<strong id="raceDateRange">加载中...</strong></div>
-    <div>目前主题：<strong id="currentTheme">加载中...</strong></div>
-    <div class="theme-content" id="currentThemeContent">内容加载中...</div>
-  </div>
-
 </div>
 
 <script>
-// 计算本周五～周日日期
-function getThisWeekFriToSun() {
-  const now = new Date();
-  const day = now.getDay();
-  const diffToFri = (5 - day + 7) % 7;
-  const fri = new Date(now);
-  fri.setDate(now.getDate() + diffToFri);
-  const sun = new Date(fri);
-  sun.setDate(fri.getDate() + 2);
-
-  function fmt(d) {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const d_ = String(d.getDate()).padStart(2, '0');
-    return `${y}年${m}月${d_}日`;
-  }
-  return `${fmt(fri)}～${fmt(sun)}`;
-}
-
 const OLD_PASSWORDS = {
   "white202501":true,"white202502":true,"white202503":true,"white202504":true,"white202505":true,
   "white202506":true,"white202507":true,"white202508":true,"white202509":true,"white202510":true,
@@ -265,7 +153,7 @@ const RACE_FIXED = {
   "luotuo":"骆驼",
   "baoyu":"鲍鱼",
   "miaomiaojun":"喵喵君"
-  "xiaosuda":"小苏打"
+  "小苏打":"小苏打"
 };
 const RACE_FREE = ["bisai1","bisai2","bisai3","bisai4","bisai5","bisai6","bisai7","bisai8","bisai9","bisai10","bisai11","bisai12","bisai13","bisai14","bisai15"];
 const ADMIN_PWD = "jingyuan";
@@ -312,73 +200,6 @@ let life = 1;
 let timer = null;
 let remain = ANSWER_TIME;
 let selected = -1;
-let usedReviveInGame = false;
-
-// 公告 & 主题 & 排行榜存储
-function getNotice() {
-  return JSON.parse(localStorage.getItem('raceNotice') || '{"time":"系统","content":"欢迎参加百币英雄活动"}');
-}
-function saveNoticeData(obj) {
-  localStorage.setItem('raceNotice', JSON.stringify(obj));
-}
-function getTheme() {
-  return JSON.parse(localStorage.getItem('raceTheme') || '{"title":"百币英雄","content":"周五至周日限时答题竞赛，凭成绩领取奖励"}');
-}
-function saveThemeData(obj) {
-  localStorage.setItem('raceTheme', JSON.stringify(obj));
-}
-function getRaceScores() {
-  return JSON.parse(localStorage.getItem('raceScoreBoard') || '{}');
-}
-function saveRaceScore(period, name, score, usedRevive) {
-  let board = getRaceScores();
-  if (!board[period]) board[period] = [];
-  let list = board[period];
-  let idx = list.findIndex(x => x.name === name);
-  if (idx >= 0) {
-    if (score > list[idx].score) list[idx] = {name, score, usedRevive};
-  } else {
-    list.push({name, score, usedRevive});
-  }
-  list.sort((a,b)=>b.score - a.score);
-  board[period] = list;
-  localStorage.setItem('raceScoreBoard', JSON.stringify(board));
-}
-
-// 页面渲染
-function renderNotice() {
-  let n = getNotice();
-  $('noticeTime').innerText = n.time;
-  $('noticeContent').innerText = n.content;
-}
-function renderTheme() {
-  let t = getTheme();
-  $('currentTheme').innerText = t.title;
-  $('currentThemeContent').innerText = t.content;
-  $('raceDateRange').innerText = getThisWeekFriToSun();
-}
-function renderRank() {
-  let pi = getPeriodInfo();
-  let period = pi.periodName;
-  let board = getRaceScores();
-  let list = board[period] || [];
-  let html = '';
-  if (list.length === 0) {
-    html = '<div style="text-align:center;color:#999;padding:10px;">暂无成绩</div>';
-  } else {
-    list.slice(0,10).forEach((item,i)=>{
-      let reviveTip = item.usedRevive ? '已用复活' : '未用复活';
-      html += `
-      <div class="rank-item">
-        <div class="rank-no">${i+1}</div>
-        <div class="rank-name">${item.name}</div>
-        <div class="rank-score">${item.score} 题</div>
-        <div class="rank-revive">${reviveTip}</div>
-      </div>`;
-    });
-  }
-  $('rankList').innerHTML = html;
-}
 
 function fmtDate(d) {
   const year = d.getFullYear();
@@ -416,86 +237,45 @@ function isFixedAccountUsed(pwd, key) { return usedFixedAccounts[pwd] === key; }
 function markFixedAccountUsed(pwd, key) { usedFixedAccounts[pwd] = key; localStorage.setItem('usedRaceAccounts', JSON.stringify(usedFixedAccounts)); }
 function isCompetitionPassword(pwd) { return pwd in RACE_FIXED || RACE_FREE.includes(pwd); }
 
-// 复活卡校验
+// 密钥逻辑：jingchen 无限，其他一次性
 function checkAndConsumeCode(code) {
   const cleanCode = code.trim().toLowerCase();
   if (cleanCode === UNLIMITED_CODE.toLowerCase()) return true;
+
   if (!SINGLE_USE_CODES.has(cleanCode)) return false;
   if (usedCodes.includes(cleanCode)) return false;
+
+  // 标记一次性密钥已使用
   usedCodes.push(cleanCode);
   localStorage.setItem('usedReviveCodes', JSON.stringify(usedCodes));
   return true;
 }
 
-// 管理员菜单
+// 新增：重置所有一次性复活密钥
+function resetAllUsedCodes() {
+  if (!confirm('确定要重置所有一次性复活密钥吗？所有用过的密钥将恢复可用。')) return;
+  usedCodes = [];
+  localStorage.setItem('usedReviveCodes', JSON.stringify(usedCodes));
+  alert('已重置所有一次性复活密钥！');
+}
+
 function showAdminMenu() {
   $('adminMenu').style.display = 'block';
   $('editQuestionsSection').style.display = 'none';
-  $('editNoticeSection').style.display = 'none';
-  $('editThemeSection').style.display = 'none';
   $('resetRaceSection').style.display = 'none';
+  $('resetCodeSection').style.display = 'none';
 }
 function showEditQuestions() {
   $('adminMenu').style.display = 'none';
   $('editQuestionsSection').style.display = 'block';
-  $('editNoticeSection').style.display = 'none';
-  $('editThemeSection').style.display = 'none';
   $('resetRaceSection').style.display = 'none';
-  $('questionEditor').value = JSON.stringify(BANK, null, 2);
+  $('resetCodeSection').style.display = 'none';
 }
-function showEditNotice() {
-  $('adminMenu').style.display = 'none';
-  $('editQuestionsSection').style.display = 'none';
-  $('editNoticeSection').style.display = 'block';
-  $('editThemeSection').style.display = 'none';
-  $('resetRaceSection').style.display = 'none';
-  let n = getNotice();
-  $('noticeTimeInput').value = n.time;
-  $('noticeContentInput').value = n.content;
-}
-function showEditTheme() {
-  $('adminMenu').style.display = 'none';
-  $('editQuestionsSection').style.display = 'none';
-  $('editNoticeSection').style.display = 'none';
-  $('editThemeSection').style.display = 'block';
-  $('resetRaceSection').style.display = 'none';
-  let t = getTheme();
-  $('themeTitleInput').value = t.title;
-  $('themeContentInput').value = t.content;
-}
-
-function saveNotice() {
-  let time = $('noticeTimeInput').value.trim();
-  let content = $('noticeContentInput').value.trim();
-  if (!time || !content) { alert('请填写完整'); return; }
-  saveNoticeData({time, content});
-  renderNotice();
-  alert('公告已保存');
-}
-function saveTheme() {
-  let title = $('themeTitleInput').value.trim();
-  let content = $('themeContentInput').value.trim();
-  if (!title || !content) { alert('请填写完整'); return; }
-  saveThemeData({title, content});
-  renderTheme();
-  alert('主题已保存');
-}
-
-function backToAdminMenu() {
-  showAdminMenu();
-}
-function exitAdmin() {
-  $('adminPanel').style.display = 'none';
-  $('loginBox').style.display = 'block';
-  renderRank();
-}
-
 function showResetRacePanel() {
   $('adminMenu').style.display = 'none';
   $('editQuestionsSection').style.display = 'none';
-  $('editNoticeSection').style.display = 'none';
-  $('editThemeSection').style.display = 'none';
   $('resetRaceSection').style.display = 'block';
+  $('resetCodeSection').style.display = 'none';
   const pi = getPeriodInfo();
   const currentKey = pi.periodName;
   const container = $('usedAccountsContainer');
@@ -522,11 +302,27 @@ function showResetRacePanel() {
     div.onclick = () => {
       delete usedFixedAccounts[item.pwd];
       localStorage.setItem('usedRaceAccounts', JSON.stringify(usedFixedAccounts));
-      alert(`已重置：${item.name}，可重新参赛`);
+      alert(`已重置：${item.name}`);
       showResetRacePanel();
     };
     container.appendChild(div);
   });
+}
+
+// 新增：打开密钥重置面板
+function showResetCodePanel() {
+  $('adminMenu').style.display = 'none';
+  $('editQuestionsSection').style.display = 'none';
+  $('resetRaceSection').style.display = 'none';
+  $('resetCodeSection').style.display = 'block';
+}
+
+function backToAdminMenu() {
+  showAdminMenu();
+}
+function exitAdmin() {
+  $('adminPanel').style.display = 'none';
+  $('loginBox').style.display = 'block';
 }
 
 function saveQuestions() {
@@ -534,7 +330,7 @@ function saveQuestions() {
     BANK = JSON.parse($('questionEditor').value);
     alert('题库保存成功！');
   } catch(e) {
-    alert('JSON格式错误，请检查！');
+    alert('JSON格式错误！');
   }
 }
 
@@ -549,7 +345,6 @@ function login() {
   isRaceMode = false;
   racePeriodText = '';
   isCompetitionAccount = isCompetitionPassword(pwd);
-  usedReviveInGame = false;
 
   if (pwd === ADMIN_PWD) {
     $('loginBox').style.display = 'none';
@@ -599,7 +394,8 @@ function startGame() {
   }
 
   $('userInfo').innerText = `玩家：${currentUser}`;
-  correct = 0; currentQ = 0;
+  currentQ = 0;
+  correct = 0;
   questionList = shuffle([...BANK]).slice(0, 12);
   showQuestion();
 }
@@ -612,7 +408,6 @@ function goBack() {
   $('loginBox').style.display = 'block';
   document.body.classList.remove('competition-mode');
   updateTimeDisplay();
-  renderRank();
 }
 
 function showQuestion() {
@@ -663,7 +458,6 @@ function judge() {
     } else {
       if (life > 0) {
         life--;
-        usedReviveInGame = true;
         currentQ++;
         showQuestion();
       } else {
@@ -683,7 +477,6 @@ function showEnd(title) {
 
   if (isRaceMode && racePeriodText) {
     $('racePeriodTip').innerText = `参赛时段：${racePeriodText}`;
-    saveRaceScore(racePeriodText, currentUser, correct, usedReviveInGame);
   } else {
     $('racePeriodTip').innerText = '';
   }
@@ -716,11 +509,7 @@ function shuffle(arr) {
   return arr;
 }
 
-// 初始化
 updateTimeDisplay();
-renderNotice();
-renderTheme();
-renderRank();
 </script>
 </body>
 </html>
