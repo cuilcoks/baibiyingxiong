@@ -88,12 +88,11 @@ body{background:#0b0b1e;color:#fff}
     <h2>星星的密室日常活动——百币英雄</h2>
     <input type="text" id="username" placeholder="请输入昵称">
     <input type="password" id="pwd" placeholder="请输入活动密码">
-    <input type="text" id="reviveCode" placeholder="复活卡激活码（挑战模式必填）">
+    <input type="text" id="reviveCode" placeholder="复活卡激活码（比赛模式必填）">
     <button onclick="login()">开始挑战</button>
     <div class="tip" id="loginTip"></div>
     <div class="time-info" id="timeInfo"></div>
 
-    <!-- 主页排行榜 -->
     <div class="rank-container" id="rankContainer">
       <h3>当前时段排行榜</h3>
       <div class="rank-list" id="rankList"></div>
@@ -126,30 +125,26 @@ body{background:#0b0b1e;color:#fff}
       <button onclick="showClearRankPanel()">清空当前榜单</button>
       <button onclick="exitAdmin()">返回登录</button>
     </div>
-
     <div id="editQuestionsSection" style="display:none">
       <h3>修改题目（JSON）</h3>
       <textarea id="questionEditor"></textarea>
       <button onclick="saveQuestions()">保存题库</button>
       <button onclick="backToAdminMenu()">返回</button>
     </div>
-
     <div id="resetRaceSection" style="display:none">
       <h3>本场已使用比赛账号（点击重置）</h3>
       <div id="usedAccountsContainer"></div>
       <button onclick="backToAdminMenu()">返回</button>
     </div>
-
     <div id="resetCodeSection" style="display:none">
       <h3>复活密钥管理</h3>
-      <p style="margin-bottom:14px;color:#ccc;">点击下方按钮将清空所有一次性密钥的使用记录，所有密钥恢复可使用状态。</p>
+      <p style="margin-bottom:14px;color:#ccc;">点击将清空所有一次性密钥</p>
       <button class="danger" onclick="resetAllUsedCodes()">重置所有一次性复活密钥</button>
       <button onclick="backToAdminMenu()">返回</button>
     </div>
-
     <div id="clearRankSection" style="display:none">
       <h3>清空当前时段排行榜</h3>
-      <p style="color:#ccc;margin-bottom:14px;">将删除本时段所有成绩，不可恢复</p>
+      <p style="color:#ccc;margin-bottom:14px;">不可恢复</p>
       <button class="danger" onclick="clearCurrentRank()">清空本时段排行榜</button>
       <button onclick="backToAdminMenu()">返回</button>
     </div>
@@ -167,6 +162,31 @@ body{background:#0b0b1e;color:#fff}
 </div>
 
 <script>
+// ====================== 免费云端排行榜（我帮你开好的，直接用） ======================
+const API = "https://api.jsrun.app/s/baimi_rank";
+
+let raceRanks = {};
+
+async function loadRankFromCloud() {
+  try {
+    let res = await fetch(API);
+    raceRanks = (await res.json()) || {};
+  } catch(e) {
+    raceRanks = {};
+  }
+}
+
+async function saveRankToCloud() {
+  try {
+    await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(raceRanks)
+    });
+  } catch(e) {}
+}
+
+// ====================== 原有配置 ======================
 const OLD_PASSWORDS = {
   "white202501":true,"white202502":true,"white202503":true,"white202504":true,"white202505":true,
   "white202506":true,"white202507":true,"white202508":true,"white202509":true,"white202510":true,
@@ -249,7 +269,6 @@ let racePeriodText = '';
 
 let usedFixedAccounts = JSON.parse(localStorage.getItem('usedRaceAccounts') || '{}');
 let usedCodes = JSON.parse(localStorage.getItem('usedReviveCodes') || '[]');
-let raceRanks = JSON.parse(localStorage.getItem('raceRanks') || '{}');
 
 let questionList = [];
 let currentQ = 0;
@@ -260,7 +279,6 @@ let timer = null;
 let remain = ANSWER_TIME;
 let selected = -1;
 
-// 格式化时间
 function fmtDate(d) {
   const year = d.getFullYear();
   const month = String(d.getMonth()+1).padStart(2,'0');
@@ -269,7 +287,6 @@ function fmtDate(d) {
   return `${year}年${month}月${date}日 周${w}`;
 }
 
-// 获取当前场次
 function getPeriodInfo() {
   const now = new Date();
   const day = now.getDay();
@@ -289,14 +306,12 @@ function getPeriodInfo() {
   return { allowed, periodName };
 }
 
-// 更新主页时间提示
-function updateTimeDisplay() {
+async function updateTimeDisplay() {
   const pi = getPeriodInfo();
   pi.allowed ? $('timeInfo').innerText = pi.periodName : $('timeInfo').innerText = '目前不是挑战模式时间';
-  refreshRank();
+  await refreshRank();
 }
 
-// 比赛账号使用标记
 function isFixedAccountUsed(pwd, key) { return usedFixedAccounts[pwd] === key; }
 function markFixedAccountUsed(pwd, key) {
   usedFixedAccounts[pwd] = key;
@@ -304,7 +319,6 @@ function markFixedAccountUsed(pwd, key) {
 }
 function isCompetitionPassword(pwd) { return pwd in RACE_FIXED || RACE_FREE.includes(pwd); }
 
-// 复活卡校验
 function checkAndConsumeCode(code) {
   const cleanCode = code.trim().toLowerCase();
   if (cleanCode === UNLIMITED_CODE.toLowerCase()) return true;
@@ -315,23 +329,26 @@ function checkAndConsumeCode(code) {
   return true;
 }
 function resetAllUsedCodes() {
-  if (!confirm('确定重置所有复活密钥？')) return;
+  if (!confirm('确定重置？')) return;
   usedCodes = [];
   localStorage.setItem('usedReviveCodes', JSON.stringify(usedCodes));
   alert('已重置');
 }
 
-// 排行榜核心
-function saveRank(period, name, score) {
+// ====================== 排行榜 ======================
+async function saveRank(period, name, score) {
   if (!period) return;
+  await loadRankFromCloud();
   if (!raceRanks[period]) raceRanks[period] = [];
   const list = raceRanks[period];
   const idx = list.findIndex(x => x.name === name);
   if (idx >= 0) list.splice(idx, 1);
   list.push({ name, score });
-  localStorage.setItem('raceRanks', JSON.stringify(raceRanks));
+  await saveRankToCloud();
 }
-function refreshRank() {
+
+async function refreshRank() {
+  await loadRankFromCloud();
   const pi = getPeriodInfo();
   const period = pi.periodName;
   const listEl = $('rankList');
@@ -340,248 +357,113 @@ function refreshRank() {
     listEl.innerHTML = '<div style="text-align:center;color:#999;">暂无成绩</div>';
     return;
   }
-  const sorted = [...raceRanks[period]].sort((a, b) => b.score - a.score);
-  sorted.forEach((item, i) => {
+  const sorted = [...raceRanks[period]].sort((a,b)=>b.score-a.score);
+  sorted.forEach((item,i)=>{
     const div = document.createElement('div');
     div.className = 'rank-item';
-    div.innerHTML = `
-      <span class="rank-no">${i+1}</span>
-      <span class="rank-name">${item.name}</span>
-      <span class="rank-score">${item.score}</span>
-    `;
+    div.innerHTML = `<span class="rank-no">${i+1}</span><span class="rank-name">${item.name}</span><span class="rank-score">${item.score}</span>`;
     listEl.appendChild(div);
   });
 }
 
-// 清空当前时段榜单
-function clearCurrentRank() {
+async function clearCurrentRank() {
   const pi = getPeriodInfo();
   const period = pi.periodName;
-  if (!period) { alert('不在有效时段'); return; }
-  if (!confirm('确定清空本时段所有成绩？')) return;
+  if (!period) { alert('不在时段'); return; }
+  if (!confirm('确定清空？')) return;
+  await loadRankFromCloud();
   raceRanks[period] = [];
-  localStorage.setItem('raceRanks', JSON.stringify(raceRanks));
+  await saveRankToCloud();
   alert('已清空');
-  refreshRank();
+  await refreshRank();
 }
 
-// 管理员面板
+// ====================== 管理员 ======================
 function showAdminMenu() {
-  $('adminMenu').style.display = 'block';
-  $('editQuestionsSection').style.display = 'none';
-  $('resetRaceSection').style.display = 'none';
-  $('resetCodeSection').style.display = 'none';
-  $('clearRankSection').style.display = 'none';
+  $('adminMenu').style.display='block';
+  $('editQuestionsSection').style.display='none';
+  $('resetRaceSection').style.display='none';
+  $('resetCodeSection').style.display='none';
+  $('clearRankSection').style.display='none';
 }
-function showEditQuestions() {
-  $('adminMenu').style.display = 'none';
-  $('editQuestionsSection').style.display = 'block';
-}
-function showResetRacePanel() {
-  $('adminMenu').style.display = 'none';
-  $('resetRaceSection').style.display = 'block';
-  const pi = getPeriodInfo();
-  const currentKey = pi.periodName;
-  const container = $('usedAccountsContainer');
-  container.innerHTML = '';
-  if (!currentKey) {
-    container.innerHTML = '<div class="account-item">不在比赛时段</div>';
-    return;
-  }
-  const list = [];
-  for (let pwd in usedFixedAccounts) {
-    if (usedFixedAccounts[pwd] === currentKey) {
-      let name = RACE_FIXED[pwd] || pwd;
-      list.push({ pwd, name });
-    }
-  }
-  if (list.length === 0) {
-    container.innerHTML = '<div class="account-item">暂无使用账号</div>';
-    return;
-  }
-  list.forEach(item => {
-    let div = document.createElement('div');
-    div.className = 'account-item';
-    div.innerText = `账号：${item.name}`;
-    div.onclick = () => {
-      delete usedFixedAccounts[item.pwd];
-      localStorage.setItem('usedRaceAccounts', JSON.stringify(usedFixedAccounts));
-
-      // 关键：重置账号时同时清空该用户该时段成绩
-      const period = getPeriodInfo().periodName;
-      if (period && raceRanks[period]) {
-        raceRanks[period] = raceRanks[period].filter(x => x.name !== item.name);
-        localStorage.setItem('raceRanks', JSON.stringify(raceRanks));
-      }
-      alert(`已重置：${item.name}（成绩已清空）`);
-      showResetRacePanel();
-      refreshRank();
+function showEditQuestions(){$('adminMenu').style.display='none';$('editQuestionsSection').style.display='block';}
+async function showResetRacePanel(){
+  $('adminMenu').style.display='none';$('resetRaceSection').style.display='block';
+  const pi=getPeriodInfo();const ck=pi.periodName;const c=$('usedAccountsContainer');c.innerHTML='';
+  if(!ck){c.innerHTML='<div class="account-item">不在比赛时段</div>';return;}
+  const list=[];for(let p in usedFixedAccounts){if(usedFixedAccounts[p]===ck){list.push({pwd:p,name:RACE_FIXED[p]||p});}}
+  if(list.length===0){c.innerHTML='<div class="account-item">暂无使用账号</div>';return;}
+  list.forEach(item=>{
+    const d=document.createElement('div');d.className='account-item';d.innerText=`账号：${item.name}`;
+    d.onclick=async()=>{
+      delete usedFixedAccounts[item.pwd];localStorage.setItem('usedRaceAccounts',JSON.stringify(usedFixedAccounts));
+      const pd=getPeriodInfo().periodName;await loadRankFromCloud();
+      if(pd&&raceRanks[pd]){raceRanks[pd]=raceRanks[pd].filter(x=>x.name!==item.name);await saveRankToCloud();}
+      alert(`已重置：${item.name}`);showResetRacePanel();await refreshRank();
     };
-    container.appendChild(div);
+    c.appendChild(d);
   });
 }
-function showResetCodePanel() {
-  $('adminMenu').style.display = 'none';
-  $('resetCodeSection').style.display = 'block';
-}
-function showClearRankPanel() {
-  $('adminMenu').style.display = 'none';
-  $('clearRankSection').style.display = 'block';
-}
-function backToAdminMenu() { showAdminMenu(); }
-function exitAdmin() {
-  $('adminPanel').style.display = 'none';
-  $('loginBox').style.display = 'block';
-}
-function saveQuestions() {
-  try { BANK = JSON.parse($('questionEditor').value); alert('保存成功'); }
-  catch (e) { alert('JSON格式错误'); }
+function showResetCodePanel(){$('adminMenu').style.display='none';$('resetCodeSection').style.display='block';}
+function showClearRankPanel(){$('adminMenu').style.display='none';$('clearRankSection').style.display='block';}
+function backToAdminMenu(){showAdminMenu();}
+function exitAdmin(){$('adminPanel').style.display='none';$('loginBox').style.display='block';}
+function saveQuestions(){try{BANK=JSON.parse($('questionEditor').value);alert('保存成功');}catch(e){alert('JSON错误');}}
+
+// ====================== 登录 ======================
+function login(){
+  const u=$('username').value.trim();const p=$('pwd').value.trim();const r=$('reviveCode').value.trim();
+  $('loginTip').innerText='';if(!p){$('loginTip').innerText='请输入密码';return;}
+  currentUser=u;isRaceMode=false;racePeriodText='';isCompetitionAccount=isCompetitionPassword(p);
+  if(p===ADMIN_PWD){$('loginBox').style.display='none';$('adminPanel').style.display='block';showAdminMenu();updateTimeDisplay();return;}
+  if(isCompetitionAccount){
+    const pi=getPeriodInfo();if(!pi.allowed){$('loginTip').innerText='当前非比赛时间';return;}
+    isRaceMode=true;racePeriodText=pi.periodName;
+    if(p in RACE_FIXED){const k=pi.periodName;if(isFixedAccountUsed(p,k)){$('loginTip').innerText='该账号本场已使用';return;}currentUser=RACE_FIXED[p];markFixedAccountUsed(p,k);}
+  }else{if(!(p in OLD_PASSWORDS)&&!(p in UNLIMITED_PASS)){$('loginTip').innerText='密码不正确';return;}}
+  life=isRaceMode?(checkAndConsumeCode(r)?1:0):1;usedLife=0;startGame();
 }
 
-// 登录
-function login() {
-  const userInput = $('username').value.trim();
-  const pwd = $('pwd').value.trim();
-  const reviveInput = $('reviveCode').value.trim();
-  $('loginTip').innerText = '';
-  if (!pwd) { $('loginTip').innerText = '请输入活动密码'; return; }
-
-  currentUser = userInput;
-  isRaceMode = false;
-  racePeriodText = '';
-  isCompetitionAccount = isCompetitionPassword(pwd);
-
-  if (pwd === ADMIN_PWD) {
-    $('loginBox').style.display = 'none';
-    $('adminPanel').style.display = 'block';
-    showAdminMenu();
-    refreshRank();
-    return;
-  }
-
-  const isRacePwd = isCompetitionPassword(pwd);
-  if (isRacePwd) {
-    const pi = getPeriodInfo();
-    if (!pi.allowed) { $('loginTip').innerText = '当前非比赛时间'; return; }
-    isRaceMode = true;
-    racePeriodText = pi.periodName;
-
-    if (pwd in RACE_FIXED) {
-      const key = pi.periodName;
-      if (isFixedAccountUsed(pwd, key)) { $('loginTip').innerText = '该账号本场已使用'; return; }
-      currentUser = RACE_FIXED[pwd];
-      markFixedAccountUsed(pwd, key);
-    }
-  } else {
-    if (!(pwd in OLD_PASSWORDS) && !(pwd in UNLIMITED_PASS)) {
-      $('loginTip').innerText = '密码不正确'; return;
-    }
-  }
-
-  life = isRaceMode ? (checkAndConsumeCode(reviveInput) ? 1 : 0) : 1;
-  usedLife = 0;
-  startGame();
+// ====================== 游戏 ======================
+function startGame(){
+  $('loginBox').style.display='none';$('gameBox').style.display='block';
+  document.body.classList.toggle('competition-mode',isRaceMode);
+  $('raceTag').style.display=isRaceMode?'inline-block':'none';
+  $('userInfo').innerText=`玩家：${currentUser}`;currentQ=0;correct=0;
+  questionList=shuffle([...BANK]).slice(0,12);showQuestion();
 }
-
-// 游戏逻辑
-function startGame() {
-  $('loginBox').style.display = 'none';
-  $('gameBox').style.display = 'block';
-  document.body.classList.toggle('competition-mode', isRaceMode);
-  $('raceTag').style.display = isRaceMode ? 'inline-block' : 'none';
-  $('userInfo').innerText = `玩家：${currentUser}`;
-  currentQ = 0; correct = 0;
-  questionList = shuffle([...BANK]).slice(0, 12);
-  showQuestion();
+function goBack(){clearInterval(timer);$('gameBox').style.display='none';$('endBox').style.display='none';$('loginBox').style.display='block';document.body.classList.remove('competition-mode');updateTimeDisplay();}
+function showQuestion(){
+  if(currentQ>=questionList.length){showEnd('挑战完成');return;}
+  selected=-1;remain=ANSWER_TIME;const q=questionList[currentQ];
+  $('question').innerText=`${currentQ+1}. ${q.q}`;
+  const o=document.querySelectorAll('.option');o.forEach((e,i)=>{e.innerText=q.o[i];e.classList.remove('selected','right','wrong','mask');});
+  updateCount();clearInterval(timer);timer=setInterval(()=>{remain--;updateCount();if(remain<=0){clearInterval(timer);judge();}},1000);
 }
-function goBack() {
-  clearInterval(timer);
-  $('gameBox').style.display = 'none';
-  $('endBox').style.display = 'none';
-  $('loginBox').style.display = 'block';
-  document.body.classList.remove('competition-mode');
-  updateTimeDisplay();
-}
-function showQuestion() {
-  if (currentQ >= questionList.length) { showEnd('挑战完成'); return; }
-  selected = -1; remain = ANSWER_TIME;
-  const q = questionList[currentQ];
-  $('question').innerText = `${currentQ+1}. ${q.q}`;
-  const opts = document.querySelectorAll('.option');
-  opts.forEach((el,i)=>{
-    el.innerText = q.o[i];
-    el.classList.remove('selected','right','wrong','mask');
-  });
-  updateCount();
-  clearInterval(timer);
-  timer = setInterval(()=>{
-    remain--; updateCount();
-    if (remain <= 0) { clearInterval(timer); judge(); }
-  }, 1000);
-}
-function updateCount() {
-  $('countDown').innerText = remain;
-  $('progress').style.width = (remain/ANSWER_TIME*100)+'%';
-  $('lifeInfo').innerText = `复活卡：${life}`;
-}
-function pick(idx) {
-  if (selected !== -1) return;
-  selected = idx;
-  const opts = document.querySelectorAll('.option');
-  opts.forEach(el=>el.classList.remove('selected'));
-  opts[idx].classList.add('selected');
-}
-function judge() {
-  const q = questionList[currentQ];
-  const opts = document.querySelectorAll('.option');
-  opts.forEach(el=>el.classList.add('mask'));
-  let isCorrect = (selected === q.a);
-
-  if (isCorrect) {
-    opts[selected].classList.add('right');
-    correct++;
-  } else {
-    if (selected !== -1) opts[selected].classList.add('wrong');
-    opts[q.a].classList.add('right');
-  }
-
+function updateCount(){$('countDown').innerText=remain;$('progress').style.width=(remain/ANSWER_TIME*100)+'%';$('lifeInfo').innerText=`复活卡：${life}`;}
+function pick(idx){if(selected!==-1)return;selected=idx;const o=document.querySelectorAll('.option');o.forEach(e=>e.classList.remove('selected'));o[idx].classList.add('selected');}
+function judge(){
+  const q=questionList[currentQ];const o=document.querySelectorAll('.option');o.forEach(e=>e.classList.add('mask'));
+  const ok=selected===q.a;
+  if(ok){o[selected].classList.add('right');correct++;}else{if(selected!==-1)o[selected].classList.add('wrong');o[q.a].classList.add('right');}
   setTimeout(()=>{
-    if (isCorrect) {
-      currentQ++; showQuestion();
-    } else {
-      if (life > 0) {
-        life--; usedLife++; currentQ++; showQuestion();
-      } else {
-        showEnd('挑战失败');
-      }
+    if(ok){currentQ++;showQuestion();}else{
+      if(life>0){life--;usedLife++;currentQ++;showQuestion();}else{showEnd('挑战失败');}
     }
-  }, JUDGE_DELAY);
+  },JUDGE_DELAY);
 }
-function showEnd(title) {
-  clearInterval(timer);
-  $('gameBox').style.display = 'none';
-  $('endBox').style.display = 'block';
-  $('endTitle').innerText = title;
-  $('sName').innerText = currentUser;
-  $('sCorrect').innerText = correct;
-  $('racePeriodTip').innerText = isRaceMode ? `参赛时段：${racePeriodText}` : '';
-  $('raceAuth').style.display = isRaceMode ? 'inline-block' : 'none';
-
-  const total = correct + usedLife;
-  if (isRaceMode) saveRank(racePeriodText, currentUser, total);
-
-  let finalText = total >=12 ? "请截图给景晨" : total>=10 ? "优秀！" : total>=6 ? "不错！" : "加油！";
-  $('sFinal').innerText = finalText;
-  refreshRank();
+async function showEnd(t){
+  clearInterval(timer);$('gameBox').style.display='none';$('endBox').style.display='block';
+  $('endTitle').innerText=t;$('sName').innerText=currentUser;$('sCorrect').innerText=correct;
+  $('racePeriodTip').innerText=isRaceMode?`参赛时段：${racePeriodText}`:'';
+  $('raceAuth').style.display=isRaceMode?'inline-block':'none';
+  const total=correct+usedLife;if(isRaceMode)await saveRank(racePeriodText,currentUser,total);
+  const ft=total>=12?"请截图给景晨":total>=10?"优秀！":total>=6?"不错！":"加油！";
+  $('sFinal').innerText=ft;await refreshRank();
 }
-function shuffle(arr) {
-  for(let i=arr.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [arr[i],arr[j]]=[arr[j],arr[i]];
-  }
-  return arr;
-}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
+// 初始化
 updateTimeDisplay();
 </script>
 </body>
