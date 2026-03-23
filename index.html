@@ -3,502 +3,145 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>星星的密室日常活动——百币英雄</title>
+<title>星星的密室常驻活动 - 百币英雄</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:PingFang SC,Microsoft YaHei,sans-serif}
 body{background:#0b0b1e;color:#fff}
-.main{max-width:700px;margin:0 auto;padding:20px;min-height:100vh}
-.game{display:none;background:#0b0b1e;position:relative}
-.competition-mode .game{
-  display:block;
-  background: linear-gradient(90deg, #ffc107 0%, #ffc107 50%, #9c27b0 50%, #9c27b0 100%);
-}
-.top-bar{display:flex;justify-content:space-between;align-items:center;padding:10px 0}
-.user-text{color:#aab8c7;font-size:15px}
-.life{color:#ffde55}
-.count-down{font-size:22px;font-weight:700;color:#ffde55}
-.race-tag{
-  background:#ff4380;color:#fff;padding:4px 10px;border-radius:8px;font-size:14px;font-weight:bold;
-}
-.progress-bar{width:100%;height:8px;background:#1e253e;border-radius:4px;margin:10px 0;overflow:hidden}
-.progress-line{height:100%;background:linear-gradient(90deg,#ff4380,#fa7250);width:100%;transition:.1s linear}
-.question-box{background:#12172b;border-radius:20px;padding:28px;margin-top:10px}
-.question-title{font-size:20px;line-height:1.6;margin-bottom:24px;color:#f0f4ff}
-.option{background:#1b223a;border-radius:14px;padding:18px 16px;margin-bottom:12px;font-size:16px;cursor:pointer}
-.option.selected{background:#293557}
-.option.right{background:#1a6c38}
-.option.wrong{background:#7a2c2c}
-.option.mask{pointer-events:none}
+.main{max-width:1000px;margin:0 auto;padding:20px}
 
-.login{background:#12172b;border-radius:20px;padding:40px;margin-top:30px;border:1px solid #273050}
-.login h2{text-align:center;font-size:24px;color:#f9e488;margin-bottom:26px}
+.login{background:#12172b;border-radius:20px;padding:40px;margin-top:20px;border:1px solid #273050}
+.login h2{text-align:center;font-size:24px;color:#f9e488;margin-bottom:14px}
+.theme-box{text-align:center;margin-bottom:26px}
+.theme-title{font-size:18px;color:#ffde55;font-weight:bold;margin-bottom:6px}
+.theme-desc{font-size:14px;color:#c0c8e7;line-height:1.5}
 .login input{width:100%;height:50px;background:#1b223a;border:none;border-radius:12px;color:#fff;padding:0 16px;font-size:16px;margin-bottom:14px}
 .login button{width:100%;height:52px;background:linear-gradient(90deg,#6250ff,#8a7aff);border:none;border-radius:12px;color:#fff;font-size:17px;font-weight:700}
 .tip{text-align:center;color:#ff5555;margin-top:12px;font-size:14px}
 .time-info{text-align:center;margin-top:20px;font-size:15px;color:#c0c8e7}
 
-/* 主页排行榜 */
-.rank-container{
-  background:#12172b; border-radius:16px; padding:20px; margin-top:24px;
-}
-.rank-container h3{
-  color:#ffde55; text-align:center; margin-bottom:14px; font-size:18px;
-}
-.rank-list{
-  display:flex; flex-direction:column; gap:8px;
-}
-.rank-item{
-  display:flex; align-items:center; justify-content:space-between;
-  background:#1b223a; padding:12px 16px; border-radius:10px;
-}
-.rank-num{
-  width:32px; font-weight:bold; color:#ff9500;
-}
-.rank-name{
-  flex:1; text-align:left;
-}
-.rank-score{
-  color:#ffde55; font-weight:bold;
-}
+.game{display:none;gap:20px;margin-top:20px}
+.panel{flex:1;background:#12172b;border-radius:20px;padding:24px}
+.panel h3{text-align:center;margin-bottom:16px;color:#ffde55}
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.count-down{font-size:20px;font-weight:700;color:#ffde55}
+.decay{font-size:14px;color:#ccc}
+.life-text{color:#ffde55}
+.progress-bar{width:100%;height:6px;background:#1e253e;border-radius:3px;margin:10px 0;overflow:hidden}
+.progress-line{height:100%;background:linear-gradient(90deg,#ff4380,#fa7250);width:100%;transition:.1s linear}
+.question-box{margin-top:16px}
+.question-title{font-size:16px;line-height:1.5;margin-bottom:16px;color:#f0f4ff}
+.option{background:#1b223a;border-radius:12px;padding:14px;margin-bottom:10px;font-size:14px;cursor:pointer}
+.option.right{background:#1a6c38}
+.option.wrong{background:#7a2c2c}
+.option.mask{pointer-events:none}
 
-.admin{display:none;background:#12172b;border-radius:20px;padding:30px;margin-top:20px}
-.admin h3{color:#f9e488;margin-bottom:15px}
-.admin textarea{width:100%;height:300px;background:#1b223a;color:#fff;border-radius:8px;padding:10px;font-size:14px;margin-bottom:10px}
-.admin button{
-  background:#6250ff;color:#fff;border:none;border-radius:10px;padding:10px 16px;
-  margin-right:10px;margin-bottom:10px;cursor:pointer;font-weight:bold
-}
-.admin .danger{background:#c92e2e}
-.admin .account-item{padding:10px 14px;background:#1b223a;border-radius:8px;margin-bottom:8px;cursor:pointer}
-.admin .account-item:hover{background:#253252}
-
-.end{display:none;text-align:center;background:#12172b;border-radius:20px;padding:40px;margin-top:20px}
+.end{display:none;text-align:center;background:#12172b;border-radius:20px;padding:40px;margin-top:30px}
 .end h2{font-size:26px;color:#f9e488;margin-bottom:20px}
 .end p{color:#c0c8e7;font-size:16px;margin:6px 0}
 .end .final{color:#ffde55;font-size:18px;margin:20px 0}
-.end .race-auth{
-  display:inline-block;background:#ffc107;color:#000;padding:6px 14px;border-radius:10px;font-weight:bold;margin-top:10px;
-}
 .end button{background:linear-gradient(90deg,#ff4380,#fa7250);border:none;border-radius:14px;color:#fff;padding:14px 32px;font-size:16px;margin-top:10px}
+
+.admin{display:none;background:#12172b;border-radius:20px;padding:30px;margin-top:20px}
+.admin h3{color:#f9e488;margin-bottom:15px}
+.admin button{background:#6250ff;color:#fff;border:none;border-radius:10px;padding:10px 16px;margin:5px}
 </style>
 </head>
 <body>
+
 <div class="main">
   <div class="login" id="loginBox">
-    <h2>星星的密室日常活动——百币英雄</h2>
+    <h2>星星的密室日常活动 - 百币英雄</h2>
+    <div class="theme-box">
+      <div class="theme-title" id="themeTitle"></div>
+      <div class="theme-desc" id="themeDesc"></div>
+    </div>
     <input type="text" id="username" placeholder="请输入昵称">
     <input type="password" id="pwd" placeholder="请输入活动密码">
-    <input type="text" id="reviveCode" placeholder="复活卡激活码（比赛模式必填）">
+    <input type="text" id="reviveCode" placeholder="复活卡激活码">
     <button onclick="login()">开始挑战</button>
-    <div class="tip" id="loginTip"></div>
+    <div class="tip" id="tip"></div>
     <div class="time-info" id="timeInfo"></div>
-
-    <div class="rank-container" id="rankContainer">
-      <h3>当前时段排行榜</h3>
-      <div class="rank-list" id="rankList"></div>
-    </div>
   </div>
 
   <div class="game" id="gameBox">
-    <div class="top-bar">
-      <div class="user-text" id="userInfo"></div>
-      <div class="race-tag" id="raceTag" style="display:none;">比赛模式</div>
-      <div class="life" id="lifeInfo">复活卡：1</div>
-      <div class="count-down" id="countDown">12</div>
+    <div class="panel">
+      <h3>正常答题</h3>
+      <div class="top-bar">
+        <div>题号：<span id="normalNum">1</span></div>
+        <div class="life-text" id="lifeTip">复活卡：1</div>
+      </div>
+      <div class="question-box">
+        <div class="question-title" id="normalQ"></div>
+        <div class="option" onclick="chooseNormal(0)"></div>
+        <div class="option" onclick="chooseNormal(1)"></div>
+        <div class="option" onclick="chooseNormal(2)"></div>
+        <div class="option" onclick="chooseNormal(3)"></div>
+      </div>
     </div>
-    <div class="progress-bar"><div class="progress-line" id="progress"></div></div>
-    <div class="question-box">
-      <div class="question-title" id="question"></div>
-      <div class="option" onclick="pick(0)"></div>
-      <div class="option" onclick="pick(1)"></div>
-      <div class="option" onclick="pick(2)"></div>
-      <div class="option" onclick="pick(3)"></div>
-    </div>
-  </div>
 
-  <div class="admin" id="adminPanel">
-    <div id="adminMenu">
-      <h3>管理员面板</h3>
-      <button onclick="showEditQuestions()">修改题目</button>
-      <button onclick="showResetRacePanel()">重置比赛账号</button>
-      <button onclick="showResetCodePanel()">重置复活密钥</button>
-      <button onclick="showClearRankPanel()">清空当前榜单</button>
-      <button onclick="exitAdmin()">返回登录</button>
-    </div>
-    <div id="editQuestionsSection" style="display:none">
-      <h3>修改题目（JSON）</h3>
-      <textarea id="questionEditor"></textarea>
-      <button onclick="saveQuestions()">保存题库</button>
-      <button onclick="backToAdminMenu()">返回</button>
-    </div>
-    <div id="resetRaceSection" style="display:none">
-      <h3>本场已使用比赛账号（点击重置）</h3>
-      <div id="usedAccountsContainer"></div>
-      <button onclick="backToAdminMenu()">返回</button>
-    </div>
-    <div id="resetCodeSection" style="display:none">
-      <h3>复活密钥管理</h3>
-      <p style="margin-bottom:14px;color:#ccc;">点击将清空所有一次性密钥</p>
-      <button class="danger" onclick="resetAllUsedCodes()">重置所有一次性复活密钥</button>
-      <button onclick="backToAdminMenu()">返回</button>
-    </div>
-    <div id="clearRankSection" style="display:none">
-      <h3>清空当前时段排行榜</h3>
-      <p style="color:#ccc;margin-bottom:14px;">不可恢复</p>
-      <button class="danger" onclick="clearCurrentRank()">清空本时段排行榜</button>
-      <button onclick="backToAdminMenu()">返回</button>
+    <div class="panel">
+      <h3>时间竞速</h3>
+      <div class="top-bar">
+        <div>剩余：<span class="count-down" id="totalTime">120.0</span>s</div>
+        <div class="decay">扣减：<span id="decayVal">1.00</span>/s</div>
+      </div>
+      <div class="progress-bar"><div class="progress-line" id="timeBar"></div></div>
+      <div class="question-box">
+        <div class="question-title" id="timeQ"></div>
+        <div class="option" onclick="chooseTime(0)"></div>
+        <div class="option" onclick="chooseTime(1)"></div>
+        <div class="option" onclick="chooseTime(2)"></div>
+        <div class="option" onclick="chooseTime(3)"></div>
+      </div>
     </div>
   </div>
 
   <div class="end" id="endBox">
     <h2 id="endTitle"></h2>
-    <p>昵称：<span id="sName"></span></p>
-    <p>答对题数：<span id="sCorrect"></span></p>
-    <p id="racePeriodTip" style="margin-top:10px;color:#ffde55"></p>
-    <div class="race-auth" id="raceAuth" style="display:none;"></div>
-    <div class="final" id="sFinal"></div>
-    <button onclick="goBack()">返回</button>
+    <p>昵称：<span id="endName"></span></p>
+    <p>正常答题：<span id="endNormal"></span> 题</p>
+    <p>时间竞速：<span id="endTime"></span> 题</p>
+    <p>场次：<span id="endPeriod"></span></p>
+    <div class="final" id="endFinal"></div>
+    <button onclick="backToLogin()">返回首页</button>
+  </div>
+
+  <div class="admin" id="adminBox">
+    <h3>管理员面板</h3>
+    <button onclick="backToLogin()">返回登录</button>
   </div>
 </div>
 
 <script>
-// ====================== 免费云端排行榜（我帮你开好的，直接用） ======================
-const API = "https://api.jsrun.app/s/baimi_rank";
+// ====================== 主题 ======================
+const WEEK_THEME = "脑裂";
+const WEEK_DESC = "双面板同步作答：正常答题可使用复活卡；时间面板120秒，扣减每秒递增0.01，时间归零直接失败。";
 
-let raceRanks = {};
-
-async function loadRankFromCloud() {
-  try {
-    let res = await fetch(API);
-    raceRanks = (await res.json()) || {};
-  } catch(e) {
-    raceRanks = {};
-  }
-}
-
-async function saveRankToCloud() {
-  try {
-    await fetch(API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(raceRanks)
-    });
-  } catch(e) {}
-}
-
-// ====================== 原有配置 ======================
+// ====================== 账号体系 ======================
 const OLD_PASSWORDS = {
   "white202501":true,"white202502":true,"white202503":true,"white202504":true,"white202505":true,
   "white202506":true,"white202507":true,"white202508":true,"white202509":true,"white202510":true,
   "white202511":true,"white202512":true,"white202513":true,"white202514":true,"white202515":true,
-  "white202516":true,"white202517":true,"white202518":true,"white202519":true,"white202520":true,
-  "noback202501":false,"noback202502":false,"noback202503":false,"noback202504":false,"noback202505":false,
-  "noback202506":false,"noback202507":false,"noback202508":false,"noback202509":false,"noback202510":false,
-  "noback202511":false,"noback202512":false,"noback202513":false,"noback202514":false,"noback202515":false,
-  "noback202516":false,"noback202517":false,"noback202518":false,"noback202519":false,"noback202520":false
+  "white202516":true,"white202517":true,"white202518":true,"white202519":true,"white202520":true
 };
 const UNLIMITED_PASS = {
-  "7Sd2Kf9G":true,"P3s8VbN5":true,"2Fk6Zr7D":true,"J5g9Qh2S":true,"4Bv7Rt1K":true,
-  "M1s6Gf8Z":true,"9Dk2Fn7V":true,"C5b8Sh3J":true,"6Rt2Kg9P":true,"W2q7Df5S":true,
-  "3Nf6Kb2D":false,"8Gv1Sj5Z":false,"1Qk7Fb3D":false,"5Bn9Sh2K":false,"7Zr3Df6G":false,
-  "2Ps8Kj4V":false,"9Hj5Fn2B":false,"4Vm7Sk1D":false,"6Fg2Bn9J":false,"1Dk8Sr5V":false
+  "7Sd2Kf9G":true,"P3s8VbN5":true,"2Fk6Zr7D":true,"J5g9Qh2S":true,"4Bv7Rt1K":true
 };
 const RACE_FIXED = {
-  "jingchen":"景晨",
-  "awmcful":"AW",
-  "wangyan":"亡烟",
-  "nannan":"楠楠",
-  "luotuo":"骆驼",
-  "xiaosuda":"小苏打",
-  "miaomiaojun":"喵喵君"
+  "jingchen":"景晨","awmcful":"AW","wangyan":"亡烟","nannan":"楠楠",
+  "luotuo":"骆驼","xiaosuda":"小苏打","miaomiaojun":"喵喵君"
 };
-const RACE_FREE = ["bisai1","bisai2","bisai3","bisai4","bisai5","bisai6","bisai7","bisai8","bisai9","bisai10","bisai11","bisai12","bisai13","bisai14","bisai15"];
-const ADMIN_PWD = "jingyuan";
-const ANSWER_TIME = 12;
-const JUDGE_DELAY = 1500;
-
-const SINGLE_USE_CODES = new Set([
-  "123789","456123","789456","147258","369852",
-  "159357","258741","111222","333444","555666",
-  "777888","999000","121212","232323","343434",
-  "454545","565656","676767","787878","898989",
-  "889988","990099","123321","456654","789987",
-  "147741","258852","369963","111111","222222"
-]);
-
-const UNLIMITED_CODE = "jingchen";
-
-let isCompetitionAccount = false;
-let BANK = [
-{q:"单词‘benefit’表示？",o:["益处","伤害","损失","负担"],a:0},
-{q:"单词‘consequence’意为？",o:["结果","原因","条件","方式"],a:0},
-{q:"英语中，‘然而’的连接词是？",o:["however","therefore","besides","thus"],a:0},
-{q:"牛顿第一定律又称？",o:["惯性定律","加速度定律","作用力定律","万有引力定律"],a:0},
-{q:"保质期指？",o:["最佳食用期","不可食用","绝对安全","过期可吃"],a:0},
-{q:"骨骼最多矿物质？",o:["铁","钙","锌","镁"],a:1},
-{q:"电脑病毒不通过？",o:["U盘","空气传播","网络","邮件"],a:1},
-{q:"冬季取暖注意？",o:["紧闭门窗","通风防中毒","用炭火","靠近暖气"],a:1},
-{q:"剩菜剩饭属于？",o:["可回收","厨余垃圾","有害","其他"],a:1},
-{q:"人体最大消化腺？",o:["胃","肝脏","胰腺","小肠"],a:1},
-{q:"蒙德风神是谁？",o:["摩拉克斯","巴巴托斯","巴尔泽布","纳西妲"],a:1},
-{q:"璃月岩神是谁？",o:["巴巴托斯","摩拉克斯","巴尔泽布","纳西妲"],a:1},
-{q:"稻妻雷神是谁？",o:["纳西妲","巴尔泽布","巴巴托斯","摩拉克斯"],a:1},
-{q:"须弥草神是谁？",o:["巴尔泽布","纳西妲","巴巴托斯","摩拉克斯"],a:1},
-{q:"主角统称？",o:["空","旅行者","荧","派蒙"],a:1},
-{q:"西风骑士团团长？",o:["丽莎","琴","凯亚","安柏"],a:1},
-{q:"璃月天权星是？",o:["刻晴","凝光","钟离","甘雨"],a:1},
-{q:"神里家大小姐是？",o:["神里绫人","神里绫华","宵宫","早柚"],a:1},
-{q:"枫丹水神是？",o:["那维莱特","芙宁娜","莱欧斯利","克洛琳德"],a:1},
-{q:"《原神》中‘尘世七执政'不包含？",o:["火神","冰神","月神","水神"],a:2},
-{q:"星穹主角统称？",o:["丹恒","开拓者","三月七","姬子"],a:1},
-{q:"列车长是？",o:["姬子","帕姆","瓦尔特","杨"],a:1},
-{q:"贝洛伯格守护者？",o:["希儿","布洛妮娅","杰帕德","桑博"],a:1},
-{q:"仙舟罗浮将军？",o:["彦卿","景元","白露","停云"],a:1},
-{q:"星核猎手领袖？",o:["银狼","卡芙卡","刃","萨姆"],a:1},
-{q:"下层区领袖是？",o:["布洛妮娅","希儿","杰帕德","桑博"],a:1},
-{q:"云上五骁不含？",o:["景元","白露","刃","镜流"],a:1},
-{q:"星际和平公司代表？",o:["石心","托帕","黑塔","艾丝妲"],a:1},
-{q:"主角核心是？",o:["星尘","星核","星光","星云"],a:1},
-{q:"毁灭星神是？",o:["阿基维利","纳努克","姬子","瓦尔特"],a:1},
-{q:"单词‘accomplish’的意思是？",o:["逃避","放弃","完成","拖延"],a:2},
-{q:"单词‘persevere’表示？",o:["犹豫","急躁","屈服","坚持"],a:3},
-{q:"单词‘ambiguous’意为？",o:["确定的","清晰的","直接的","模糊的"],a:3},
-{q:"单词‘diligent’的同义词是？",o:["careless","hard-working","lazy","slow"],a:1},
-{q:"单词‘ephemeral’表示？",o:["微小的","永恒的","短暂的","巨大的"],a:2},
-{q:"单词‘resilient’意为？",o:["有韧性的","脆弱的","僵硬的","易碎的"],a:0},
-{q:"单词‘ubiquitous’表示？",o:["隐藏的","稀有的","无处不在的","昂贵的"],a:2},
-{q:"单词‘quintessential’意为？",o:["典型的","普通的","平凡的","陌生的"],a:0},
-{q:"单词‘serendipity’表示？",o:["失望","焦虑","刻意寻找","意外发现珍宝的运气"],a:3},
-{q:"单词‘melancholy’意为？",o:["忧郁的","快乐的","愤怒的","平静的"],a:0},
-{q:"英语中‘尽管’的连接词是？",o:["therefore","although","because","however"],a:1},
-{q:"英语中‘此外’的表达是？",o:["consequently","meanwhile","furthermore","nevertheless"],a:2},
-{q:"单词‘epitome’表示？",o:["边缘","整体","片段","缩影"],a:3},
-{q:"单词‘cynical’意为？",o:["天真的","愤世嫉俗的","乐观的","热情的"],a:1},
-{q:"单词‘euphemism’表示？",o:["比喻","粗话","委婉语","夸张"],a:2},
-{q:"单词‘paradox’意为？",o:["假设","真理","谎言","悖论"],a:3},
-{q:"单词‘nostalgia’表示？",o:["遗忘","憧憬","怀旧","冷漠"],a:2},
-{q:"单词‘sanguine’意为？",o:["乐观的","悲观的","冷漠的","易怒的"],a:0},
-{q:"单词‘vicarious’表示？",o:["真实的","虚假的","直接体验的","间接体验的"],a:3},
-{q:"单词‘zenith’意为？",o:["中点","顶点","谷底","边缘"],a:1},
-{q:"光的折射定律正弦比等于？",o:["波长","折射率","光速","频率"],a:1},
-{q:"热力学第一定律本质是？",o:["能量守恒","熵增原理","永动机存在","温度不变"],a:0},
-{q:"电磁波传播不需要？",o:["介质","电场","磁场","能量"],a:0},
-{q:"单摆周期公式T=？",o:["2π√(g/L)","2πL/g","2π√(L/g)","2πg/L"],a:2},
-{q:"相对论质能方程是？",o:["E=mc","E=mc²","E=mv²","E=½mv²"],a:1},
-{q:"干涉衍射证明光具有？",o:["波动性","粒子性","直线传播性","反射性"],a:0},
-{q:"欧姆定律表达式是？",o:["U=I/R","I=U/R","I=R/U","R=UI"],a:1},
-{q:"自由落体加速度约为？",o:["9.8cm/s²","10m/s²","9.8m/s²","10cm/s²"],a:2},
-{q:"动量定义式是？",o:["p=mv","p=ma","p=mv²","p=½mv²"],a:0},
-{q:"电场强度单位是？",o:["A/m","N/C","V/m","Wb/m²"],a:1},
-{q:"理想气体状态方程是？",o:["P=VRT","PV=RT","PV=nRT","n=PVRT"],a:2},
-{q:"光色散因什么不同？",o:["折射率","速度","波长","频率"],a:0},
-{q:"安培力方向用什么定则？",o:["右手螺旋","左手","右手","安培"],a:1},
-{q:"简谐回复力与位移成？",o:["正比","反比","无关","平方关系"],a:0},
-{q:"黑体辐射能量是？",o:["无限大","量子化","连续","无限小"],a:1},
-{q:"多普勒效应描述波的？",o:["速度","频率","波长","振幅"],a:1},
-{q:"电容单位是？",o:["亨利","法拉","欧姆","特斯拉"],a:1},
-{q:"万有引力提出者是？",o:["伽利略","牛顿","爱因斯坦","开普勒"],a:1},
-{q:"超导低温下什么消失？",o:["电压","电阻","电流","磁场"],a:1},
-{q:"偏振证明光是？",o:["电磁波","横波","纵波","机械波"],a:1},
-{q:"水的化学式是？",o:["H₂O₂","HO","H₂O","HO₂"],a:2},
-{q:"原子序数等于？",o:["电子数","中子数","质子数","质量数"],a:2},
-{q:"酸的pH范围是？",o:[">7","=7","<7","≤7"],a:2},
-{q:"不影响反应速率的是？",o:["浓度","温度","颜色","催化剂"],a:2},
-{q:"制氧气常用过氧化氢加？",o:["氯酸钾","高锰酸钾","二氧化锰","氯化钠"],a:2},
-{q:"甲烷化学式是？",o:["C₂H₄","CH₄","C₂H₆","C₂H₂"],a:1},
-{q:"共用电子对形成？",o:["金属键","离子键","共价键","氢键"],a:2},
-{q:"化学平衡遵循？",o:["能量守恒","勒夏特列","质量守恒","阿伏伽德罗"],a:1},
-{q:"CO₂主要来自？",o:["光合作用","化石燃料燃烧","呼吸作用","分解作用"],a:1},
-{q:"金属最活泼的是？",o:["钙","钠","镁","钾"],a:3},
-{q:"中和反应产物是？",o:["盐和酸","盐和水","酸和碱","水和碱"],a:1},
-{q:"同位素特点？",o:["质子不同中子同","都相同","质子同中子不同","都不同"],a:2},
-{q:"乙醇化学式是？",o:["C₃H₇OH","CH₃OH","C₂H₅OH","C₄H₉OH"],a:2},
-{q:"原电池负极发生？",o:["分解","氧化","还原","置换"],a:1},
-{q:"高分子基本单元是？",o:["聚合物","链节","单体","交联剂"],a:2},
-{q:"酸雨pH小于？",o:["6.5","7","4.5","5.6"],a:3},
-{q:"氯气颜色是？",o:["红棕色","黄绿色","无色","蓝色"],a:1},
-{q:"蛋白质基本单位是？",o:["葡萄糖","氨基酸","核苷酸","脂肪酸"],a:1},
-{q:"电解水正极气体是？",o:["氮气","氧气","氢气","二氧化碳"],a:1},
-{q:"配平依据是？",o:["电荷守恒","质量守恒","能量守恒","动量守恒"],a:1},
-{q:"细胞结构不包括？",o:["细胞质","细胞膜","细胞核","细胞壁"],a:3},
-{q:"光合作用场所是？",o:["核糖体","线粒体","叶绿体","内质网"],a:2},
-{q:"DNA全称是？",o:["核酸","脱氧核糖核酸","核糖核酸","核苷酸"],a:1},
-{q:"人体最大器官是？",o:["大脑","肝脏","皮肤","心脏"],a:2},
-{q:"生态能量流动特点？",o:["双向不变","单向递减","循环递增","循环递减"],a:1},
-{q:"减数分裂产生？",o:["干细胞","生殖细胞","体细胞","神经细胞"],a:1},
-{q:"向光性因什么不均？",o:["赤霉素","生长素","细胞分裂素","脱落酸"],a:1},
-{q:"呼吸作用主要在？",o:["核糖体","线粒体","叶绿体","高尔基体"],a:1},
-{q:"进化论核心是？",o:["获得性遗传","自然选择","用进废退","神创论"],a:1},
-{q:"血型由什么决定？",o:["血小板抗原","红细胞抗原","白细胞抗原","血浆蛋白"],a:1},
-{q:"光合作用原料是？",o:["葡萄糖氧气","CO₂和水","氧气水","CO₂氧气"],a:1},
-{q:"细胞凋亡是？",o:["意外性","程序性","病理性","暴力性"],a:1},
-{q:"DNA双螺旋发现者？",o:["孟德尔","沃森克里克","达尔文","施莱登"],a:1},
-{q:"免疫不包括？",o:["胸腺","消化系统","骨髓","淋巴结"],a:1},
-{q:"生态生产者是？",o:["微生物","绿色植物","动物","真菌"],a:1},
-{q:"有丝分裂结果？",o:["数目加倍","数目不变","数目减半","随机"],a:1},
-{q:"酶大多是？",o:["脂质","蛋白质","核酸","糖类"],a:1},
-{q:"中枢神经包括？",o:["脊神经","脑和脊髓","脑神经","交感神经"],a:1},
-{q:"物种形成必要条件？",o:["进化","隔离","变异","选择"],a:1},
-{q:"光合作用产物？",o:["氧气CO₂","有机物氧气","CO₂水","有机物水"],a:1},
-{q:"秦统一六国时间？",o:["公元221","前221","前202","公元202"],a:1},
-{q:"丝绸之路开辟者？",o:["玄奘","张骞","班超","鉴真"],a:1},
-{q:"唐朝开国皇帝？",o:["武则天","李渊","李世民","李隆基"],a:1},
-{q:"辛亥革命年份？",o:["1919","1911","1912","1921"],a:1},
-{q:"文艺复兴起源？",o:["英国","意大利","法国","德国"],a:1},
-{q:"美国独立导火线？",o:["萨拉托加","波士顿倾茶","莱克星顿","约克镇"],a:1},
-{q:"法国大革命标志？",o:["人权宣言","攻占巴士底狱","处死路易十六","热月政变"],a:1},
-{q:"一战导火索？",o:["索姆河","萨拉热窝事件","凡尔登","马恩河"],a:1},
-{q:"二战欧洲策源地？",o:["日本","德国","意大利","苏联"],a:1},
-{q:"新中国成立时间？",o:["1949.9.30","1949.10.1","1945.8.15","1950.10.1"],a:1},
-{q:"郑和下西洋次数？",o:["8","7","6","9"],a:1},
-{q:"《史记》作者？",o:["班固","司马迁","司马光","陈寿"],a:1},
-{q:"工业革命首发？",o:["美国","英国","法国","德国"],a:1},
-{q:"冷战开始标志？",o:["北约","杜鲁门主义","马歇尔计划","华约"],a:1},
-{q:"五四运动年份？",o:["1925","1919","1921","1937"],a:1},
-{q:"抗战全面爆发？",o:["八一三","七七事变","九一八","西安事变"],a:1},
-{q:"文艺复兴三杰不含？",o:["米开朗基罗","莎士比亚","达芬奇","拉斐尔"],a:1},
-{q:"启蒙运动不含？",o:["孟德斯鸠","马丁·路德","伏尔泰","卢梭"],a:1},
-{q:"第一次工业革命标志？",o:["电动机","蒸汽机","内燃机","计算机"],a:1},
-{q:"四大发明不含？",o:["火药","蒸汽机","指南针","造纸术"],a:1},
-{q:"地球自转方向？",o:["自南向北","自西向东","自东向西","自北向南"],a:1},
-{q:"世界最长河流？",o:["长江","尼罗河","亚马逊河","密西西比河"],a:1},
-{q:"世界最大沙漠？",o:["利比亚","撒哈拉","阿拉伯","澳大利亚"],a:1},
-{q:"世界最高峰？",o:["干城章嘉","珠穆朗玛","乔戈里","洛子峰"],a:1},
-{q:"中国母亲河？",o:["珠江","黄河","长江","黑龙江"],a:1},
-{q:"全球几大板块？",o:["8","6","7","9"],a:1},
-{q:"季风气候主要在？",o:["非洲中","亚洲东南","欧洲西","南美东"],a:1},
-{q:"热带雨林气候？",o:["夏热冬冷","全年高温多雨","全年少雨","夏干冬雨"],a:1},
-{q:"世界最大岛屿？",o:["婆罗洲","格陵兰","新几内亚","马达加斯加"],a:1},
-{q:"最深海沟？",o:["日本","马里亚纳","汤加","菲律宾"],a:1},
-{q:"中国陆地面积？",o:["980","960","970","990"],a:1},
-{q:"地球平均半径km？",o:["6571","6371","6471","6671"],a:1},
-{q:"温带海洋性气候在？",o:["非洲南","欧洲西","亚洲东","南美西"],a:1},
-{q:"最大半岛？",o:["中南","阿拉伯","印度","伊比利亚"],a:1},
-{q:"中国省级行政区数？",o:["35","34","33","36"],a:1},
-{q:"公转周期约？天",o:["364","365","366","363"],a:1},
-{q:"地中海气候？",o:["夏干冬雨","全年温和湿润","夏热冬冷","全年多雨"],a:0},
-{q:"世界最大平原？",o:["东欧","亚马逊平原","西西伯利亚","北美大平原"],a:1},
-{q:"中国第一大淡水湖？",o:["太湖","鄱阳湖","洞庭湖","洪泽湖"],a:1},
-{q:"板块碰撞形成？",o:["裂谷","山脉","海洋","平原"],a:1},
-{q:"我国根本政治制度是？",o:["基层自治","人民代表大会制度","多党合作","民族区域自治"],a:1},
-{q:"宪法是我国的？",o:["普通法律","根本大法","行政法规","地方性法规"],a:1},
-{q:"基本权利不包括？",o:["人身自由","纳税义务","言论自由","选举权"],a:1},
-{q:"最高权力机关是？",o:["国务院","全国人大","最高法","最高检"],a:1},
-{q:"民法调整？关系",o:["管理与被管理","平等主体","上下级","国家与公民"],a:1},
-{q:"刑法原则不含？",o:["罪责刑相适应","无罪推定原则","罪刑法定","人人平等"],a:1},
-{q:"合同订立经？",o:["反要约","要约和承诺","要约邀请","反承诺"],a:1},
-{q:"我国国体是？",o:["社会主义制度","人民民主专政","人民代表大会","共产主义"],a:1},
-{q:"行政诉讼被告是？",o:["公民","行政机关","法人","其他组织"],a:1},
-{q:"知识产权不含？",o:["商标权","物权","著作权","专利权"],a:1},
-{q:"我国政党制度是？",o:["两党制","多党合作制","一党制","多党制"],a:1},
-{q:"基本义务不包括？",o:["依法纳税","言论自由","维护统一","服兵役"],a:1},
-{q:"法定结婚年龄？",o:["男20女18","男22女20","男25女23","男23女21"],a:1},
-{q:"国家结构形式是？",o:["联邦制","单一制","邦联制","复合制"],a:1},
-{q:"每日工作不超？小时",o:["9","8","10","12"],a:1},
-{q:"宪法修改需？以上",o:["二分之一","三分之二","四分之三","五分之四"],a:1},
-{q:"侵权归责原则不含？",o:["过错责任","公平责任原则","无过错责任","过错推定"],a:1},
-{q:"最高行政机关是？",o:["全国人大","国务院","最高法","最高检"],a:1},
-{q:"人身自由禁止非法？",o:["逮捕","以上都是","搜查","拘禁"],a:1},
-{q:"我国国旗是？",o:["镰刀锤子旗","五星红旗","五色旗","青天白日旗"],a:1},
-{q:"《红楼梦》作者？",o:["罗贯中","曹雪芹","施耐庵","吴承恩"],a:1},
-{q:"李白被称为？",o:["诗圣","诗仙","诗佛","诗鬼"],a:1},
-{q:"《哈姆雷特》作者？",o:["但丁","莎士比亚","歌德","塞万提斯"],a:1},
-{q:"《蒙娜丽莎》作者？",o:["米开朗基罗","达芬奇","拉斐尔","梵高"],a:1},
-{q:"四大名著不含？",o:["《水浒传》","《金瓶梅》","《三国演义》","《西游记》"],a:1},
-{q:"《诗经》是第一部？",o:["散文","诗歌","小说","戏剧"],a:1},
-{q:"鲁迅代表作不含？",o:["《狂人日记》","《骆驼祥子》","《阿Q正传》","《孔乙己》"],a:1},
-{q:"命运交响曲是第？",o:["6","5","7","9"],a:1},
-{q:"《清明上河图》作者？",o:["吴道子","张择端","顾恺之","阎立本"],a:1},
-{q:"《战争与和平》作者？",o:["陀思妥耶夫斯基","托尔斯泰","高尔基","契诃夫"],a:1},
-{q:"杜甫被称为？",o:["诗仙","诗圣","诗佛","诗鬼"],a:1},
-{q:"《西游记》主角？",o:["唐僧","孙悟空","猪八戒","沙僧"],a:1},
-{q:"《神曲》作者？",o:["彼特拉克","但丁","薄伽丘","达芬奇"],a:1},
-{q:"《向日葵》作者？",o:["毕加索","梵高","莫奈","塞尚"],a:1},
-{q:"现代文学奠基人？",o:["茅盾","鲁迅","巴金","老舍"],a:1},
-{q:"《雷雨》作者？",o:["老舍","曹禺","巴金","郭沫若"],a:1},
-{q:"《天鹅湖》作者？",o:["贝多芬","柴可夫斯基","莫扎特","肖邦"],a:1},
-{q:"《兰亭集序》作者？",o:["颜真卿","王羲之","柳公权","欧阳询"],a:1},
-{q:"《百年孤独》作者？",o:["海明威","马尔克斯","福克纳","卡夫卡"],a:1},
-{q:"唐宋八大家不含？",o:["韩愈","李白","柳宗元","苏轼"],a:1},
-{q:"圆周率π≈？",o:["3.14159","3.14160","3.14158","3.14161"],a:0},
-{q:"勾股定理是？",o:["a+b=c","a²+b²=c²","a²-b²=c²","a³+b³=c³"],a:1},
-{q:"一元二次求根公式？",o:["x=(-b±√(b²-4ac))/(2a)","x=(-b±√(b²+4ac))/(2a)","x=(-b±√(4ac-b²))/(2a)","x=(-b±√(b²-4ac))/a"],a:0},
-{q:"三角形内角和？",o:["90","180","360","270"],a:1},
-{q:"圆面积公式？",o:["S=2πr","S=πr²","S=πd","S=πr"],a:1},
-{q:"等差数列通项？",o:["aₙ=a₁+(n+1)d","aₙ=a₁+(n-1)d","aₙ=a₁+nd","aₙ=a₁+(n-2)d"],a:1},
-{q:"等比数列前n项和？",o:["Sₙ=a₁(1+qⁿ)/(1-q)","Sₙ=a₁(1-qⁿ)/(1-q)","Sₙ=a₁(1-qⁿ)/(1+q)","Sₙ=a₁(1+qⁿ)/(1+q)"],a:1},
-{q:"y=sinx周期？",o:["π","2π","π/2","4π"],a:1},
-{q:"导数定义式？",o:["f’(x)=lim(Δx→0)[f(x+Δx)-f(x)]/Δx","f’(x)=lim(Δx→0)[f(x+Δx)+f(x)]/Δx","f’(x)=lim(Δx→0)[f(x-Δx)-f(x)]/Δx","f’(x)=lim(Δx→0)[f(x+Δx)-f(x)]*Δx"],a:0},
-{q:"定积分几何意义？",o:["曲线长度","曲线下面积","曲线斜率","曲线曲率"],a:1},
-{q:"复数i²=？",o:["1","-1","i","-i"],a:1},
-{q:"排列数A(n,k)=？",o:["n!/(n-k)!","n!/(n+k)!","(n-k)!/n!","(n+k)!/n!"],a:0},
-{q:"组合数C(n,k)=？",o:["n!/(k!(n-k)!)","n!/(k!(n+k)!)","(n-k)!/(k!n!)","(n+k)!/(k!n!)"],a:0},
-{q:"向量点积a·b=？",o:["|a||b|sinθ","|a||b|cosθ","|a||b|tanθ","|a||b|cotθ"],a:1},
-{q:"矩阵乘法满足？",o:["交换律","结合律","分配律","都不满足"],a:1},
-{q:"概率基本性质？",o:["P(A)≥0","0≤P(A)≤1","P(A)≤1","P(A)=1"],a:1},
-{q:"正态分布密度函数？",o:["f(x)=(1/(σ√(2π)))e^(-(x-μ)²/(2σ²))","f(x)=(1/(σ√(2π)))e^(-(x-μ)²/(σ²))","f(x)=(1/(σ√(2π)))e^(-(x-μ)²/(4σ²))","f(x)=(1/(σ√(2π)))e^(-(x-μ)²/(8σ²))"],a:0},
-{q:"lim(x→0) sinx/x=？",o:["0","1","∞","-1"],a:1},
-{q:"泰勒展开式？",o:["f(x)=Σf^(n)(a)(x-a)^n/n!","f(x)=Σf^(n)(a)(x-a)^n","f(x)=Σf^(n)(a)(x-a)^(n+1)/n!","f(x)=Σf^(n)(a)(x-a)^(n-1)/n!"],a:0},
-{q:"欧拉公式？",o:["e^(iθ)=cosθ+isinθ","e^(iθ)=cosθ-isinθ","e^(iθ)=sinθ+icosθ","e^(iθ)=sinθ-icosθ"],a:0},
-{q:"人体正常体温℃",o:["36","37","38","39"],a:1},
-{q:"标准大气压沸点℃",o:["90","100","80","110"],a:1},
-{q:"缺维C易得？",o:["夜盲症","坏血病","佝偻病","脚气病"],a:1},
-{q:"电脑核心部件？",o:["内存","CPU","硬盘","显卡"],a:1},
-{q:"充电时应避免？",o:["关机充电","边充边玩","原装充电器","低温充电"],a:1},
-{q:"冰箱冷藏温度℃",o:["0","4","10","-18"],a:1},
-{q:"火灾逃生应？",o:["低姿捂口鼻","乘电梯","开窗等","跳楼"],a:0},
-{q:"地震正确做法？",o:["躲桌下","站窗边","乘电梯","跑阳台"],a:0},
-{q:"废旧电池属于？",o:["可回收","有害垃圾","厨余","其他"],a:1},
-{q:"饮用水pH范围",o:["5.5-6.5","6.5-8.5","8.5-9.5","4.5-5.5"],a:1},
-{q:"缺维A易得？",o:["坏血病","夜盲症","佝偻病","脚气病"],a:1},
-{q:"显示器最佳亮度？",o:["最亮","接近环境光","最暗","随意"],a:1},
-{q:"车内禁放？",o:["纸巾","打火机","矿泉水","手机"],a:1},
-{q:"煤气泄漏首先？",o:["开灯","关阀开窗","点火","打电话"],a:1},
-{q:"保质期指？",o:["最佳食用期","不可食用","绝对安全","过期可吃"],a:0},
-{q:"骨骼最多矿物质？",o:["铁","钙","锌","镁"],a:1},
-{q:"电脑病毒不通过？",o:["U盘","空气传播","网络","邮件"],a:1},
-{q:"冬季取暖注意？",o:["紧闭门窗","通风防中毒","用炭火","靠近暖气"],a:1},
-{q:"剩菜剩饭属于？",o:["可回收","厨余垃圾","有害","其他"],a:1},
-{q:"人体最大消化腺？",o:["胃","肝脏","胰腺","小肠"],a:1},
-{q:"蒙德风神是谁？",o:["摩拉克斯","巴巴托斯","巴尔泽布","纳西妲"],a:1},
-{q:"璃月岩神是谁？",o:["巴巴托斯","摩拉克斯","巴尔泽布","纳西妲"],a:1},
-{q:"稻妻雷神是谁？",o:["纳西妲","巴尔泽布","巴巴托斯","摩拉克斯"],a:1},
-{q:"须弥草神是谁？",o:["巴尔泽布","纳西妲","巴巴托斯","摩拉克斯"],a:1},
-{q:"主角统称？",o:["空","旅行者","荧","派蒙"],a:1},
-{q:"西风骑士团团长？",o:["丽莎","琴","凯亚","安柏"],a:1},
-{q:"璃月天权星是？",o:["刻晴","凝光","钟离","甘雨"],a:1},
-{q:"神里家大小姐是？",o:["神里绫人","神里绫华","宵宫","早柚"],a:1},
-{q:"枫丹水神是？",o:["那维莱特","芙宁娜","莱欧斯利","克洛琳德"],a:1},
-{q:"《原神》中‘尘世七执政'不包含？",o:["火神","冰神","月神","水神"],a:2},
-{q:"星穹主角统称？",o:["丹恒","开拓者","三月七","姬子"],a:1},
-{q:"列车长是？",o:["姬子","帕姆","瓦尔特","杨"],a:1},
-{q:"贝洛伯格守护者？",o:["希儿","布洛妮娅","杰帕德","桑博"],a:1},
-{q:"仙舟罗浮将军？",o:["彦卿","景元","白露","停云"],a:1},
-{q:"星核猎手领袖？",o:["银狼","卡芙卡","艾利欧","萨姆"],a:1},
-{q:"下层区领袖是？",o:["布洛妮娅","希儿","杰帕德","桑博"],a:1},
-{q:"云上五骁不含？",o:["景元","白露","刃","镜流"],a:1},
-{q:"星际和平公司代表？",o:["石心","托帕","黑塔","艾丝妲"],a:1},
-{q:"主角核心是？",o:["星尘","星核","星光","星云"],a:1},
-{q:"毁灭星神是？",o:["阿基维利","纳努克","姬子","瓦尔特"],a:1}
+const RACE_FREE = [
+  "bisai1","bisai2","bisai3","bisai4","bisai5","bisai6","bisai7","bisai8",
+  "bisai9","bisai10","bisai11","bisai12","bisai13","bisai14","bisai15"
 ];
+const SINGLE_USE_CODES = new Set([
+  "123789","456123","789456","147258","369852","159357","258741"
+]);
+const UNLIMITED_CODE = "jingchen";
+const ADMIN_PWD = "jingyuan";
 
-const $ = id => document.getElementById(id);
-let currentUser = '';
-let isRaceMode = false;
-let racePeriodText = '';
-
-let usedFixedAccounts = JSON.parse(localStorage.getItem('usedRaceAccounts') || '{}');
-let usedCodes = JSON.parse(localStorage.getItem('usedReviveCodes') || '[]');
-
-let questionList = [];
-let currentQ = 0;
-let correct = 0;
-let life = 1;
-let usedLife = 0;
-let timer = null;
-let remain = ANSWER_TIME;
-let selected = -1;
-
+// ====================== 时间段 ======================
 function fmtDate(d) {
   const year = d.getFullYear();
   const month = String(d.getMonth()+1).padStart(2,'0');
@@ -512,179 +155,386 @@ function getPeriodInfo() {
   const day = now.getDay();
   const h = now.getHours();
   const dateStr = fmtDate(now);
-  let allowed = false;
-  let periodName = '';
-  if (day === 5) {
-    if (h >= 6 && h < 20)  { allowed = true; periodName = `${dateStr} 06:00~20:00场`; }
-    if (h >= 20 && h < 24) { allowed = true; periodName = `${dateStr} 20:00~24:00场`; }
-  } else if (day === 6 || day === 0) {
-    if (h >= 8 && h < 12)  { allowed = true; periodName = `${dateStr} 08:00~12:00场`; }
-    if (h >= 12 && h < 16) { allowed = true; periodName = `${dateStr} 12:00~16:00场`; }
-    if (h >= 16 && h < 20) { allowed = true; periodName = `${dateStr} 16:00~20:00场`; }
-    if (h >= 20 && h < 24) { allowed = true; periodName = `${dateStr} 20:00~24:00场`; }
+  let allowed = false, periodName = '';
+  if(day === 5){
+    if(h >= 6 && h < 20){ allowed = true; periodName = `${dateStr} 06:00~20:00场`; }
+    if(h >=20 && h <24){ allowed = true; periodName = `${dateStr} 20:00~24:00场`; }
+  }
+  if(day === 6 || day === 0){
+    if(h >=8 && h <12){ allowed = true; periodName = `${dateStr} 08:00~12:00场`; }
+    if(h >=12 && h <16){ allowed = true; periodName = `${dateStr} 12:00~16:00场`; }
+    if(h >=16 && h <20){ allowed = true; periodName = `${dateStr} 16:00~20:00场`; }
+    if(h >=20 && h <24){ allowed = true; periodName = `${dateStr} 20:00~24:00场`; }
   }
   return { allowed, periodName };
 }
 
-async function updateTimeDisplay() {
+// ====================== 题库 ======================
+const BANK = [
+  {q:"单词 benefit 意思是？",o:["益处","伤害","损失","负担"],a:0},
+  {q:"单词 consequence 意为？",o:["结果","原因","条件","方式"],a:0},
+  {q:"英语中表然而的连接词是？",o:["however","therefore","besides","thus"],a:0},
+  {q:"牛顿第一定律又称？",o:["惯性定律","加速度定律","作用力定律","引力定律"],a:0},
+  {q:"保质期指？",o:["最佳食用期","不可食用","绝对安全","过期可吃"],a:0},
+  {q:"骨骼中最多的矿物质是？",o:["铁","钙","锌","镁"],a:1},
+  {q:"电脑病毒不通过什么传播？",o:["U盘","空气","网络","邮件"],a:1},
+  {q:"冬季取暖应注意？",o:["紧闭门窗","通风防中毒","多用炭火","靠近暖气"],a:1},
+  {q:"剩菜剩饭属于？",o:["可回收","厨余垃圾","有害垃圾","其他垃圾"],a:1},
+  {q:"人体最大消化腺是？",o:["胃","肝脏","胰腺","小肠"],a:1},
+  {q:"蒙德风神是谁？",o:["摩拉克斯","巴巴托斯","巴尔泽布","纳西妲"],a:1},
+  {q:"璃月岩神是谁？",o:["巴巴托斯","摩拉克斯","巴尔泽布","纳西妲"],a:1},
+  {q:"稻妻雷神是谁？",o:["纳西妲","巴尔泽布","巴巴托斯","摩拉克斯"],a:1},
+  {q:"须弥草神是谁？",o:["巴尔泽布","纳西妲","巴巴托斯","摩拉克斯"],a:1},
+  {q:"原神主角统称？",o:["空","旅行者","荧","派蒙"],a:1},
+  {q:"西风骑士团团长是？",o:["丽莎","琴","凯亚","安柏"],a:1},
+  {q:"璃月天权星是？",o:["刻晴","凝光","钟离","甘雨"],a:1},
+  {q:"神里家大小姐是？",o:["神里绫人","神里绫华","宵宫","早柚"],a:1},
+  {q:"枫丹水神是？",o:["那维莱特","芙宁娜","莱欧斯利","克洛琳德"],a:1},
+  {q:"尘世七执政不包含？",o:["火神","冰神","月神","水神"],a:2},
+  {q:"星穹主角统称？",o:["丹恒","开拓者","三月七","姬子"],a:1},
+  {q:"星穹列车长是？",o:["姬子","帕姆","瓦尔特","杨"],a:1},
+  { q: "下列哪个是太阳系中最大的行星？", o: ["木星", "火星", "地球", "金星"], a: 0 },
+  { q: "下列哪种气体占空气比例最高？", o: ["氧气", "氮气", "二氧化碳", "氢气"], a: 1 },
+  { q: "水的化学分子式是？", o: ["H₂O", "CO₂", "O₂", "H₂"], a: 0 },
+  { q: "下列哪个不是基本味觉？", o: ["甜", "酸", "辣", "苦"], a: 2 },
+  { q: "地球自转一圈大约需要？", o: ["一年", "一月", "一天", "一小时"], a: 2 },
+  { q: "下列哪种动物属于哺乳动物？", o: ["鳄鱼", "麻雀", "鲸鱼", "蛇"], a: 2 },
+  { q: "光合作用主要发生在植物的哪个部位？", o: ["根", "茎", "叶", "花"], a: 2 },
+  { q: "下列哪个是人体最大的器官？", o: ["心脏", "肝脏", "皮肤", "大脑"], a: 2 },
+  { q: "声音在下列哪种介质中传播最快？", o: ["空气", "水", "钢铁", "真空"], a: 2 },
+  { q: "下列哪个不是金属元素？", o: ["铁", "铜", "碳", "铝"], a: 2 },
+  { q: "一年中白天最长的一天是？", o: ["春分", "夏至", "秋分", "冬至"], a: 1 },
+  { q: "下列哪个是可再生能源？", o: ["煤炭", "石油", "风能", "天然气"], a: 2 },
+  { q: "计算机存储单位中 1GB 等于？", o: ["1000MB", "1024MB", "1000KB", "1024KB"], a: 1 },
+  { q: "下列哪种食物富含维生素C？", o: ["牛肉", "橙子", "米饭", "鸡蛋"], a: 1 },
+  { q: "地壳中含量最多的元素是？", o: ["氧", "硅", "铝", "铁"], a: 0 },
+  { q: "下列哪个是无脊椎动物？", o: ["鱼", "鸟", "蝴蝶", "猫"], a: 2 },
+  { q: "正常人体的体温约为？", o: ["35℃", "37℃", "39℃", "41℃"], a: 1 },
+  { q: "下列哪个行星离太阳最近？", o: ["金星", "地球", "水星", "火星"], a: 2 },
+  { q: "下列哪种物质pH值小于7？", o: ["肥皂水", "白醋", "小苏打水", "盐水"], a: 1 },
+  { q: "植物进行呼吸作用主要消耗？", o: ["氧气", "二氧化碳", "氮气", "阳光"], a: 0 },
+  { q: "下列哪个不是导体？", o: ["铜", "铝", "橡胶", "银"], a: 2 },
+  { q: "海市蜃楼是光的什么现象？", o: ["反射", "折射", "衍射", "干涉"], a: 1 },
+  { q: "下列哪种鸟不会飞？", o: ["麻雀", "老鹰", "鸵鸟", "鸽子"], a: 2 },
+  { q: "DNA的中文全称是？", o: ["核糖核酸", "脱氧核糖核酸", "氨基酸", "蛋白质"], a: 1 },
+  { q: "下列哪个是温室气体？", o: ["氧气", "氮气", "二氧化碳", "氢气"], a: 2 },
+
+  // 26–50
+  { q: "下列哪种金属常温下是液态？", o: ["铁", "汞", "金", "银"], a: 1 },
+  { q: "彩虹一般出现在？", o: ["雨后晴天", "雾天", "雪天", "阴天"], a: 0 },
+  { q: "下列哪个是我国的直辖市？", o: ["南京", "重庆", "杭州", "广州"], a: 1 },
+  { q: "水结冰体积会？", o: ["变大", "变小", "不变", "先小后大"], a: 0 },
+  { q: "下列哪种不是自然灾害？", o: ["地震", "台风", "堵车", "洪水"], a: 2 },
+  { q: "月亮本身会发光吗？", o: ["会", "不会", "白天会", "晚上会"], a: 1 },
+  { q: "下列哪个是质数？", o: ["9", "15", "17", "21"], a: 2 },
+  { q: "人体有多少块肋骨？", o: ["12对", "10对", "14对", "16对"], a: 0 },
+  { q: "下列哪种交通工具利用浮力？", o: ["汽车", "飞机", "轮船", "火车"], a: 2 },
+  { q: "下列哪个不是水果？", o: ["苹果", "香蕉", "胡萝卜", "草莓"], a: 2 },
+  { q: "互联网的前身是？", o: ["WWW", "ARPANET", "HTTP", "LAN"], a: 1 },
+  { q: "下列哪种动物冬眠？", o: ["麻雀", "兔子", "熊", "猴子"], a: 2 },
+  { q: "三角形内角和为多少度？", o: ["180", "270", "360", "90"], a: 0 },
+  { q: "下列哪个不是太阳系行星？", o: ["冥王星", "木星", "土星", "火星"], a: 0 },
+  { q: "牛奶中含量最高的矿物质是？", o: ["铁", "钙", "锌", "碘"], a: 1 },
+  { q: "下列哪种属于省力杠杆？", o: ["镊子", "筷子", "撬棍", "钓鱼竿"], a: 2 },
+  { q: "一天中最低气温通常出现在？", o: ["午夜", "日出前后", "正午", "傍晚"], a: 1 },
+  { q: "下列哪个是绝缘体？", o: ["人体", "湿木头", "陶瓷", "大地"], a: 2 },
+  { q: "植物向光生长是因为哪种激素？", o: ["生长素", "胰岛素", "肾上腺素", "甲状腺素"], a: 0 },
+  { q: "下列哪个不是能源？", o: ["阳光", "风", "石头", "水"], a: 2 },
+  { q: "正常成年人有多少颗恒牙？", o: ["28", "32", "36", "40"], a: 1 },
+  { q: "下列哪种金属最轻？", o: ["铁", "铜", "铝", "铅"], a: 2 },
+  { q: "日食发生时，位置在中间的是？", o: ["太阳", "月亮", "地球", "金星"], a: 1 },
+  { q: "下列哪个是合成材料？", o: ["棉花", "塑料", "木材", "羊毛"], a: 1 },
+  { q: "空气中供呼吸的气体是？", o: ["氮气", "氧气", "二氧化碳", "稀有气体"], a: 1 },
+  { q: "下列哪个是鱼类？", o: ["鲸鱼", "鲨鱼", "海豚", "章鱼"], a: 1 },
+  { q: "电脑CPU的中文是？", o: ["内存", "中央处理器", "硬盘", "显卡"], a: 1 },
+  { q: "下列哪种天气现象与水蒸气无关？", o: ["雨", "雪", "雾", "沙尘暴"], a: 2 },
+  { q: "人体消化食物的主要场所是？", o: ["胃", "小肠", "大肠", "口腔"], a: 1 },
+  { q: "下列哪个是偶数？", o: ["13", "17", "24", "31"], a: 2 },
+  { q: "磁铁的哪个部位磁性最强？", o: ["中间", "两端", "一样强", "都不强"], a: 1 },
+  { q: "下列哪种不是昆虫？", o: ["蚂蚁", "蜘蛛", "蜜蜂", "蝴蝶"], a: 1 },
+  { q: "地球的卫星是？", o: ["太阳", "月亮", "火星", "金星"], a: 1 },
+  { q: "下列哪种食物主要成分是淀粉？", o: ["蔬菜", "米饭", "鸡蛋", "瘦肉"], a: 1 },
+  { q: "声音不能在什么中传播？", o: ["空气", "水", "真空", "钢铁"], a: 2 },
+  { q: "下列哪个是我国最大淡水湖？", o: ["鄱阳湖", "洞庭湖", "太湖", "青海湖"], a: 0 },
+  { q: "下列哪种属于省力滑轮？", o: ["定滑轮", "动滑轮", "都省力", "都不省力"], a: 1 },
+  { q: "植物蒸腾作用主要通过？", o: ["根", "茎", "叶气孔", "花"], a: 2 },
+  { q: "下列哪个不是清洁能源？", o: ["太阳能", "核能", "煤炭", "水能"], a: 2 },
+  { q: "正常成年人安静心率约为？", o: ["50次/分", "75次/分", "100次/分", "120次/分"], a: 1 },
+  { q: "下列哪个是酸性土壤指示植物？", o: ["仙人掌", "茶树", "芦苇", "胡杨"], a: 1 },
+  { q: "光在真空中速度约为？", o: ["3×10⁵km/s", "3×10³km/s", "3×10⁴km/s", "3×10⁶km/s"], a: 0 },
+  { q: "下列哪个不是晶体？", o: ["食盐", "玻璃", "冰", "钻石"], a: 1 },
+  { q: "人体最大的消化腺是？", o: ["胰腺", "唾液腺", "肝脏", "胃腺"], a: 2 },
+  { q: "下列哪种鸟是候鸟？", o: ["麻雀", "燕子", "乌鸦", "喜鹊"], a: 1 },
+  { q: "下列哪个单位是长度单位？", o: ["千克", "秒", "米", "升"], a: 2 },
+  { q: "下列哪种物质能溶解油污？", o: ["水", "酒精", "洗洁精", "醋"], a: 2 },
+  { q: "月食发生时，位置在中间的是？", o: ["太阳", "地球", "月亮", "木星"], a: 1 },
+  { q: "下列哪个是恒温动物？", o: ["青蛙", "蛇", "乌龟", "猫"], a: 2 },
+  { q: "空气中含量第二多的气体是？", o: ["氮气", "氧气", "二氧化碳", "氩气"], a: 1 },
+
+  // 76–100
+  { q: "下列哪种不是碳水化合物？", o: ["糖", "淀粉", "脂肪", "纤维素"], a: 2 },
+  { q: "下列哪个是导体？", o: ["玻璃", "干木头", "盐水", "橡胶"], a: 2 },
+  { q: "植物光合作用产生的气体是？", o: ["二氧化碳", "氧气", "氮气", "氢气"], a: 1 },
+  { q: "下列哪个行星有光环？", o: ["地球", "火星", "土星", "水星"], a: 2 },
+  { q: "人体骨骼中最多的元素是？", o: ["碳", "钙", "磷", "氧"], a: 1 },
+  { q: "下列哪种属于费力杠杆？", o: ["开瓶器", "扳手", "镊子", "手推车"], a: 2 },
+  { q: "下列哪个不是气象灾害？", o: ["寒潮", "冰雹", "滑坡", "台风"], a: 2 },
+  { q: "手机充电时能量转化是？", o: ["电能→化学能", "化学能→电能", "电能→热能", "热能→电能"], a: 0 },
+  { q: "下列哪种动物是卵生？", o: ["牛", "羊", "鸡", "猪"], a: 2 },
+  { q: "圆的周长公式是？", o: ["πr²", "2πr", "πd²", "2πd"], a: 1 },
+  { q: "下列哪个不是天然纤维？", o: ["棉", "麻", "涤纶", "丝"], a: 2 },
+  { q: "人体血液中负责运输氧气的是？", o: ["白细胞", "血小板", "红细胞", "血浆"], a: 2 },
+  { q: "下列哪种水最纯净？", o: ["自来水", "矿泉水", "蒸馏水", "井水"], a: 2 },
+  { q: "下列哪个是热的良导体？", o: ["塑料", "木头", "铜", "空气"], a: 2 },
+  { q: "种子萌发不需要的条件是？", o: ["水分", "阳光", "空气", "适宜温度"], a: 1 },
+  { q: "下列哪种属于化石能源？", o: ["太阳能", "风能", "石油", "潮汐能"], a: 2 },
+  { q: "正常成年人有多少对染色体？", o: ["22对", "23对", "24对", "25对"], a: 1 },
+  { q: "下列哪个是密度最小的气体？", o: ["氧气", "氮气", "氢气", "氦气"], a: 2 },
+  { q: "彩虹有几种标准颜色？", o: ["5种", "6种", "7种", "8种"], a: 2 },
+  { q: "下列哪个不是新能源？", o: ["地热能", "生物质能", "煤炭", "氢能"], a: 2 },
+  { q: "下列哪种物质能使淀粉变蓝？", o: ["碘酒", "醋", "酒精", "盐水"], a: 0 },
+  { q: "飞机能升空利用的是？", o: ["浮力", "升力", "重力", "摩擦力"], a: 1 },
+  { q: "下列哪个是软体动物？", o: ["虾", "蟹", "蜗牛", "蜈蚣"], a: 2 },
+  { q: "下列哪个单位是功率单位？", o: ["焦耳", "瓦特", "牛顿", "帕斯卡"], a: 1 },
+  { q: "下列哪种行为会造成水污染？", o: ["植树", "垃圾分类", "乱排污水", "节约用水"], a: 2 }
+];
+
+// ====================== 全局状态 ======================
+const $ = id => document.getElementById(id);
+let userName = "";
+let isRace = false;
+let currentPeriod = "";
+let life = 1;
+
+let usedQuestions = new Set();
+let normalQ = null;
+let timeQ = null;
+let normalCorrect = 0;
+let timeCorrect = 0;
+let normalIndex = 0;  // 左侧独立题号
+let timeIndex = 0;    // 右侧独立题号
+let gameOver = false;
+
+let totalTime = 120;
+let decay = 1.00;
+let timeLoop = null;
+
+let usedAccounts = JSON.parse(localStorage.getItem('usedRaceAccounts') || '{}');
+let usedReviveCodes = JSON.parse(localStorage.getItem('usedReviveCodes') || '[]');
+
+// ====================== 工具 ======================
+function getUniqueQuestion() {
+  let list = BANK.filter(q => !usedQuestions.has(q));
+  if (!list.length) return null;
+  let q = list[Math.floor(Math.random()*list.length)];
+  usedQuestions.add(q);
+  return q;
+}
+
+function updateTimeTip() {
   const pi = getPeriodInfo();
-  pi.allowed ? $('timeInfo').innerText = pi.periodName : $('timeInfo').innerText = '目前不是挑战模式时间';
-  await refreshRank();
-}
-
-function isFixedAccountUsed(pwd, key) { return usedFixedAccounts[pwd] === key; }
-function markFixedAccountUsed(pwd, key) {
-  usedFixedAccounts[pwd] = key;
-  localStorage.setItem('usedRaceAccounts', JSON.stringify(usedFixedAccounts));
-}
-function isCompetitionPassword(pwd) { return pwd in RACE_FIXED || RACE_FREE.includes(pwd); }
-
-function checkAndConsumeCode(code) {
-  const cleanCode = code.trim().toLowerCase();
-  if (cleanCode === UNLIMITED_CODE.toLowerCase()) return true;
-  if (!SINGLE_USE_CODES.has(cleanCode)) return false;
-  if (usedCodes.includes(cleanCode)) return false;
-  usedCodes.push(cleanCode);
-  localStorage.setItem('usedReviveCodes', JSON.stringify(usedCodes));
-  return true;
-}
-function resetAllUsedCodes() {
-  if (!confirm('确定重置？')) return;
-  usedCodes = [];
-  localStorage.setItem('usedReviveCodes', JSON.stringify(usedCodes));
-  alert('已重置');
-}
-
-// ====================== 排行榜 ======================
-async function saveRank(period, name, score) {
-  if (!period) return;
-  await loadRankFromCloud();
-  if (!raceRanks[period]) raceRanks[period] = [];
-  const list = raceRanks[period];
-  const idx = list.findIndex(x => x.name === name);
-  if (idx >= 0) list.splice(idx, 1);
-  list.push({ name, score });
-  await saveRankToCloud();
-}
-
-async function refreshRank() {
-  await loadRankFromCloud();
-  const pi = getPeriodInfo();
-  const period = pi.periodName;
-  const listEl = $('rankList');
-  listEl.innerHTML = '';
-  if (!period || !raceRanks[period] || raceRanks[period].length === 0) {
-    listEl.innerHTML = '<div style="text-align:center;color:#999;">暂无成绩</div>';
-    return;
+  if (pi.allowed) {
+    $('timeInfo').innerText = pi.periodName;
+  } else {
+    $('timeInfo').innerText = '当前非比赛开放时间';
   }
-  const sorted = [...raceRanks[period]].sort((a,b)=>b.score-a.score);
-  sorted.forEach((item,i)=>{
-    const div = document.createElement('div');
-    div.className = 'rank-item';
-    div.innerHTML = `<span class="rank-no">${i+1}</span><span class="rank-name">${item.name}</span><span class="rank-score">${item.score}</span>`;
-    listEl.appendChild(div);
-  });
 }
-
-async function clearCurrentRank() {
-  const pi = getPeriodInfo();
-  const period = pi.periodName;
-  if (!period) { alert('不在时段'); return; }
-  if (!confirm('确定清空？')) return;
-  await loadRankFromCloud();
-  raceRanks[period] = [];
-  await saveRankToCloud();
-  alert('已清空');
-  await refreshRank();
-}
-
-// ====================== 管理员 ======================
-function showAdminMenu() {
-  $('adminMenu').style.display='block';
-  $('editQuestionsSection').style.display='none';
-  $('resetRaceSection').style.display='none';
-  $('resetCodeSection').style.display='none';
-  $('clearRankSection').style.display='none';
-}
-function showEditQuestions(){$('adminMenu').style.display='none';$('editQuestionsSection').style.display='block';}
-async function showResetRacePanel(){
-  $('adminMenu').style.display='none';$('resetRaceSection').style.display='block';
-  const pi=getPeriodInfo();const ck=pi.periodName;const c=$('usedAccountsContainer');c.innerHTML='';
-  if(!ck){c.innerHTML='<div class="account-item">不在比赛时段</div>';return;}
-  const list=[];for(let p in usedFixedAccounts){if(usedFixedAccounts[p]===ck){list.push({pwd:p,name:RACE_FIXED[p]||p});}}
-  if(list.length===0){c.innerHTML='<div class="account-item">暂无使用账号</div>';return;}
-  list.forEach(item=>{
-    const d=document.createElement('div');d.className='account-item';d.innerText=`账号：${item.name}`;
-    d.onclick=async()=>{
-      delete usedFixedAccounts[item.pwd];localStorage.setItem('usedRaceAccounts',JSON.stringify(usedFixedAccounts));
-      const pd=getPeriodInfo().periodName;await loadRankFromCloud();
-      if(pd&&raceRanks[pd]){raceRanks[pd]=raceRanks[pd].filter(x=>x.name!==item.name);await saveRankToCloud();}
-      alert(`已重置：${item.name}`);showResetRacePanel();await refreshRank();
-    };
-    c.appendChild(d);
-  });
-}
-function showResetCodePanel(){$('adminMenu').style.display='none';$('resetCodeSection').style.display='block';}
-function showClearRankPanel(){$('adminMenu').style.display='none';$('clearRankSection').style.display='block';}
-function backToAdminMenu(){showAdminMenu();}
-function exitAdmin(){$('adminPanel').style.display='none';$('loginBox').style.display='block';}
-function saveQuestions(){try{BANK=JSON.parse($('questionEditor').value);alert('保存成功');}catch(e){alert('JSON错误');}}
 
 // ====================== 登录 ======================
-function login(){
-  const u=$('username').value.trim();const p=$('pwd').value.trim();const r=$('reviveCode').value.trim();
-  $('loginTip').innerText='';if(!p){$('loginTip').innerText='请输入密码';return;}
-  currentUser=u;isRaceMode=false;racePeriodText='';isCompetitionAccount=isCompetitionPassword(p);
-  if(p===ADMIN_PWD){$('loginBox').style.display='none';$('adminPanel').style.display='block';showAdminMenu();updateTimeDisplay();return;}
-  if(isCompetitionAccount){
-    const pi=getPeriodInfo();if(!pi.allowed){$('loginTip').innerText='当前非比赛时间';return;}
-    isRaceMode=true;racePeriodText=pi.periodName;
-    if(p in RACE_FIXED){const k=pi.periodName;if(isFixedAccountUsed(p,k)){$('loginTip').innerText='该账号本场已使用';return;}currentUser=RACE_FIXED[p];markFixedAccountUsed(p,k);}
-  }else{if(!(p in OLD_PASSWORDS)&&!(p in UNLIMITED_PASS)){$('loginTip').innerText='密码不正确';return;}}
-  life=isRaceMode?(checkAndConsumeCode(r)?1:0):1;usedLife=0;startGame();
+function login() {
+  userName = $('username').value.trim();
+  let pwd = $('pwd').value.trim();
+  let code = $('reviveCode').value.trim();
+  $('tip').innerText = "";
+
+  if (!userName) return $('tip').innerText = "请输入昵称";
+  if (!pwd) return $('tip').innerText = "请输入密码";
+
+  if (pwd === ADMIN_PWD) {
+    $('loginBox').style.display = "none";
+    $('adminBox').style.display = "block";
+    return;
+  }
+
+  const pi = getPeriodInfo();
+  currentPeriod = pi.periodName;
+
+  if (pwd in RACE_FIXED) {
+    if (!pi.allowed) return $('tip').innerText = "当前非比赛时间";
+    if (usedAccounts[pwd]) return $('tip').innerText = "该比赛账号已使用";
+    isRace = true;
+    usedAccounts[pwd] = true;
+    localStorage.setItem('usedRaceAccounts', JSON.stringify(usedAccounts));
+    life = 1;
+    startGame();
+    return;
+  }
+
+  if (RACE_FREE.includes(pwd)) {
+    if (!pi.allowed) return $('tip').innerText = "当前非比赛时间";
+    isRace = true;
+    life = 1;
+    startGame();
+    return;
+  }
+
+  if (pwd in OLD_PASSWORDS || pwd in UNLIMITED_PASS) {
+    isRace = false;
+    life = 0;
+    if (code) {
+      if (code === UNLIMITED_CODE) {
+        life = 1;
+      } else if (SINGLE_USE_CODES.has(code) && !usedReviveCodes.includes(code)) {
+        usedReviveCodes.push(code);
+        localStorage.setItem('usedReviveCodes', JSON.stringify(usedReviveCodes));
+        life = 1;
+      } else {
+        return $('tip').innerText = "复活卡无效或已使用";
+      }
+    }
+    startGame();
+    return;
+  }
+
+  $('tip').innerText = "密码错误";
 }
 
 // ====================== 游戏 ======================
-function startGame(){
-  $('loginBox').style.display='none';$('gameBox').style.display='block';
-  document.body.classList.toggle('competition-mode',isRaceMode);
-  $('raceTag').style.display=isRaceMode?'inline-block':'none';
-  $('userInfo').innerText=`玩家：${currentUser}`;currentQ=0;correct=0;
-  questionList=shuffle([...BANK]).slice(0,12);showQuestion();
+function startGame() {
+  $('loginBox').style.display = "none";
+  $('gameBox').style.display = "flex";
+  gameOver = false;
+  usedQuestions.clear();
+  normalCorrect = 0;
+  timeCorrect = 0;
+  normalIndex = 0;
+  timeIndex = 0;
+
+  totalTime = 120;
+  decay = 1.00;
+  loadNormal();
+  loadTime();
+  startTimeLoop();
 }
-function goBack(){clearInterval(timer);$('gameBox').style.display='none';$('endBox').style.display='none';$('loginBox').style.display='block';document.body.classList.remove('competition-mode');updateTimeDisplay();}
-function showQuestion(){
-  if(currentQ>=questionList.length){showEnd('挑战完成');return;}
-  selected=-1;remain=ANSWER_TIME;const q=questionList[currentQ];
-  $('question').innerText=`${currentQ+1}. ${q.q}`;
-  const o=document.querySelectorAll('.option');o.forEach((e,i)=>{e.innerText=q.o[i];e.classList.remove('selected','right','wrong','mask');});
-  updateCount();clearInterval(timer);timer=setInterval(()=>{remain--;updateCount();if(remain<=0){clearInterval(timer);judge();}},1000);
+
+// 左侧正常答题
+function loadNormal() {
+  normalQ = getUniqueQuestion();
+  if (!normalQ) return endGame("全部题目完成");
+  normalIndex++;
+  $('normalNum').innerText = normalIndex;
+  $('normalQ').innerText = normalQ.q;
+  $('lifeTip').innerText = `复活卡：${life}`;
+  let ops = document.querySelectorAll('#gameBox .panel:first-child .option');
+  ops.forEach((o,i) => {
+    o.innerText = normalQ.o[i];
+    o.classList.remove("right","wrong","mask");
+  });
 }
-function updateCount(){$('countDown').innerText=remain;$('progress').style.width=(remain/ANSWER_TIME*100)+'%';$('lifeInfo').innerText=`复活卡：${life}`;}
-function pick(idx){if(selected!==-1)return;selected=idx;const o=document.querySelectorAll('.option');o.forEach(e=>e.classList.remove('selected'));o[idx].classList.add('selected');}
-function judge(){
-  const q=questionList[currentQ];const o=document.querySelectorAll('.option');o.forEach(e=>e.classList.add('mask'));
-  const ok=selected===q.a;
-  if(ok){o[selected].classList.add('right');correct++;}else{if(selected!==-1)o[selected].classList.add('wrong');o[q.a].classList.add('right');}
-  setTimeout(()=>{
-    if(ok){currentQ++;showQuestion();}else{
-      if(life>0){life--;usedLife++;currentQ++;showQuestion();}else{showEnd('挑战失败');}
+
+function chooseNormal(i) {
+  if (gameOver) return;
+  let ops = document.querySelectorAll('#gameBox .panel:first-child .option');
+  ops.forEach(o=>o.classList.add("mask"));
+  let ok = i === normalQ.a;
+
+  if (ok) {
+    ops[i].classList.add("right");
+    normalCorrect++;
+    setTimeout(loadNormal, 800);
+  } else {
+    ops[i].classList.add("wrong");
+    ops[normalQ.a].classList.add("right");
+    if (life > 0) {
+      life--;
+      setTimeout(loadNormal, 800);
+    } else {
+      setTimeout(()=>endGame("正常答题失败"), 800);
     }
-  },JUDGE_DELAY);
+  }
 }
-async function showEnd(t){
-  clearInterval(timer);$('gameBox').style.display='none';$('endBox').style.display='block';
-  $('endTitle').innerText=t;$('sName').innerText=currentUser;$('sCorrect').innerText=correct;
-  $('racePeriodTip').innerText=isRaceMode?`参赛时段：${racePeriodText}`:'';
-  $('raceAuth').style.display=isRaceMode?'inline-block':'none';
-  const total=correct+usedLife;if(isRaceMode)await saveRank(racePeriodText,currentUser,total);
-  const ft=total>=12?"请截图给景晨":total>=10?"优秀！":total>=6?"不错！":"加油！";
-  $('sFinal').innerText=ft;await refreshRank();
+
+// 右侧时间竞速
+function loadTime() {
+  timeQ = getUniqueQuestion();
+  if (!timeQ) return endGame("全部题目完成");
+  timeIndex++;
+  $('timeQ').innerText = timeQ.q;
+  let ops = document.querySelectorAll('#gameBox .panel:last-child .option');
+  ops.forEach((o,i) => {
+    o.innerText = timeQ.o[i];
+    o.classList.remove("right","wrong","mask");
+  });
+  updateTimeUI();
 }
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function startTimeLoop() {
+  clearInterval(timeLoop);
+  timeLoop = setInterval(()=>{
+    if (gameOver) return;
+    totalTime -= decay;
+    decay = Math.round((decay + 0.01)*100)/100;
+    if (totalTime <= 0) {
+      totalTime = 0;
+      endGame("时间耗尽");
+    }
+    updateTimeUI();
+  }, 1000);
+}
+
+function updateTimeUI() {
+  $('totalTime').innerText = totalTime.toFixed(1);
+  $('decayVal').innerText = decay.toFixed(2);
+  $('timeBar').style.width = (totalTime/120*100)+"%";
+}
+
+function chooseTime(i) {
+  if (gameOver) return;
+  let ops = document.querySelectorAll('#gameBox .panel:last-child .option');
+  ops.forEach(o=>o.classList.add("mask"));
+  let ok = i === timeQ.a;
+
+  if (ok) {
+    ops[i].classList.add("right");
+    timeCorrect++;
+    decay = 1.00;
+  } else {
+    ops[i].classList.add("wrong");
+    ops[timeQ.a].classList.add("right");
+    decay = 2.00;
+  }
+  setTimeout(loadTime, 800);
+}
+
+// 结束
+function endGame(msg) {
+  gameOver = true;
+  clearInterval(timeLoop);
+  $('gameBox').style.display = "none";
+  $('endBox').style.display = "block";
+  $('endTitle').innerText = msg;
+  $('endName').innerText = userName;
+  $('endNormal').innerText = normalCorrect;
+  $('endTime').innerText = timeCorrect;
+  $('endPeriod').innerText = currentPeriod || "非比赛场";
+  let total = normalCorrect + timeCorrect;
+  $('endFinal').innerText = total >= 22 ? "脑裂通关！" : "再接再厉";
+}
+
+// 返回
+function backToLogin() {
+  clearInterval(timeLoop);
+  gameOver = true;
+  $('loginBox').style.display = "block";
+  $('gameBox').style.display = "none";
+  $('endBox').style.display = "none";
+  $('adminBox').style.display = "none";
+}
 
 // 初始化
-updateTimeDisplay();
+$('themeTitle').innerText = "本周主题：" + WEEK_THEME;
+$('themeDesc').innerText = WEEK_DESC;
+updateTimeTip();
 </script>
 </body>
 </html>
