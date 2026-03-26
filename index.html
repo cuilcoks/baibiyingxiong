@@ -79,7 +79,7 @@ body{background:#0b0b1e;color:#fff}
       <h3>时间竞速</h3>
       <div class="top-bar">
         <div>剩余：<span class="count-down" id="totalTime">120.0</span>s</div>
-        <div>扣减：<span id="decayVal">1.00</span>/s</div>
+        <div>扣减：<span id="decayVal">1.0</span>/s</div>
       </div>
       <div class="progress-bar"><div class="progress-line" id="timeBar"></div></div>
       <div class="question-box">
@@ -187,7 +187,7 @@ const BANK = [
 {q:"《明星大侦探》核心玩法是？",o:["破案推理","做饭","跑步","相亲"],a:0},
 {q:"《密室大逃脱》主打内容是？",o:["密室解谜","唱歌比赛","户外跑男","亲子互动"],a:0},
 {q:"《创造101》属于什么节目？",o:["女团选秀","户外综艺","美食节目","脱口秀"],a:0},
-{q:"《吐槽大会》形式主要是？",o:["吐槽脱口秀","唱歌","跳舞","竞技"],a:0},
+{q:"《吐槽大会》形式主要是？",o:["吐槽脱口秀","唱歌"," dancing","竞技"],a:0},
 {q:"《脱口秀大会》出品方是？",o:["米未","笑果","湖南卫视","浙江卫视"],a:1},
 {q:"《爸爸去哪儿》引进自哪国？",o:["韩国","美国","英国","日本"],a:0},
 {q:"《心动的信号》是什么类型？",o:["恋爱真人秀","音乐节目","喜剧","亲子"],a:0},
@@ -284,11 +284,11 @@ const BANK = [
 {q:"挖呀挖是？",o:["儿歌梗","游戏梗","综艺梗","影视梗"],a:0},
 {q:"电子榨菜指？",o:["下饭视频","电子垃圾","游戏","外卖"],a:0},
 {q:"显眼包意思？",o:["低调","出风头","有钱","路人"],a:1},
-{q:"泰酷辣是谁梗？",o:["王鹤棣","鹿晗","吴亦凡","黄子韬"],a:0}
+{q:"泰酷辣是谁梗？",o:["王鹤棣","鹿晗","吴亦凡","黄子韬"],a:0},
 
 {q:"27-8=15这个梗来自于谁？",o:["喵喵君","aw","景晨","亡烟"],a:0},
 {q:"√50=2√5这个梗来源于谁？",o:["aw","心楠楠","骆驼","景晨"],a:3},
-{q:'"woc我放出猎人了"'来源于谁的经典桥段？"',o:["小香橙","景晨","废废","纯甄"],a:1}
+{q:"woc我放出猎人了 来源于谁的经典桥段？",o:["小香橙","景晨","废废","纯甄"],a:1}
 ];
 
 const $ = id => document.getElementById(id);
@@ -417,14 +417,18 @@ function chooseTime(i) {
   let ops = document.querySelectorAll('#gameBox .panel:last-child .option');
   ops.forEach(o=>o.classList.add("mask"));
   let ok = i === timeQ.a;
+
   if (ok) {
-    ops[i].classList.add("right"); timeCorrect++;
+    ops[i].classList.add("right");
+    timeCorrect++;
     decay = wrongCount + 1;
   } else {
-    ops[i].classList.add("wrong"); ops[timeQ.a].classList.add("right");
+    ops[i].classList.add("wrong");
+    ops[timeQ.a].classList.add("right");
     wrongCount++;
     decay = wrongCount + 1;
   }
+
   setTimeout(loadTime, 800);
 }
 
@@ -453,3 +457,4 @@ updateTimeTip();
 </script>
 </body>
 </html>
+
