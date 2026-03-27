@@ -3,516 +3,457 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>星星的密室日常活动——百币英雄</title>
+<title>星星的密室常驻活动 - 百币英雄</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:PingFang SC,Microsoft YaHei,sans-serif}
 body{background:#0b0b1e;color:#fff}
-.main{max-width:700px;margin:0 auto;padding:20px;min-height:100vh}
-.game{display:none;background:#0b0b1e;position:relative}
-.competition-mode .game{
-  display:block;
-  background: linear-gradient(90deg, #ffc107 0%, #ffc107 50%, #9c27b0 50%, #9c27b0 100%);
-}
-.top-bar{display:flex;justify-content:space-between;align-items:center;padding:10px 0}
-.user-text{color:#aab8c7;font-size:15px}
-.life{color:#ffde55}
-.count-down{font-size:22px;font-weight:700;color:#ffde55}
-.race-tag{
-  background:#ff4380;color:#fff;padding:4px 10px;border-radius:8px;font-size:14px;font-weight:bold;
-}
-.progress-bar{width:100%;height:8px;background:#1e253e;border-radius:4px;margin:10px 0;overflow:hidden}
-.progress-line{height:100%;background:linear-gradient(90deg,#ff4380,#fa7250);width:100%;transition:.1s linear}
-.question-box{background:#12172b;border-radius:20px;padding:28px;margin-top:10px}
-.question-title{font-size:20px;line-height:1.6;margin-bottom:24px;color:#f0f4ff}
-.option{background:#1b223a;border-radius:14px;padding:18px 16px;margin-bottom:12px;font-size:16px;cursor:pointer}
-.option.selected{background:#293557}
-.option.right{background:#1a6c38}
-.option.wrong{background:#7a2c2c}
-.option.mask{pointer-events:none}
-
-.login{background:#12172b;border-radius:20px;padding:40px;margin-top:30px;border:1px solid #273050}
-.login h2{text-align:center;font-size:24px;color:#f9e488;margin-bottom:26px}
+.main{max-width:1000px;margin:0 auto;padding:20px}
+.login{background:#12172b;border-radius:20px;padding:40px;margin-top:20px;border:1px solid #273050}
+.login h2{text-align:center;font-size:24px;color:#f9e488;margin-bottom:14px}
+.theme-box{text-align:center;margin-bottom:26px}
+.theme-title{font-size:18px;color:#ffde55;font-weight:bold;margin-bottom:6px}
+.theme-desc{font-size:14px;color:#c0c8e7;line-height:1.5}
 .login input{width:100%;height:50px;background:#1b223a;border:none;border-radius:12px;color:#fff;padding:0 16px;font-size:16px;margin-bottom:14px}
 .login button{width:100%;height:52px;background:linear-gradient(90deg,#6250ff,#8a7aff);border:none;border-radius:12px;color:#fff;font-size:17px;font-weight:700}
 .tip{text-align:center;color:#ff5555;margin-top:12px;font-size:14px}
 .time-info{text-align:center;margin-top:20px;font-size:15px;color:#c0c8e7}
-
-.admin{display:none;background:#12172b;border-radius:20px;padding:30px;margin-top:20px}
-.admin h3{color:#f9e488;margin-bottom:15px}
-.admin textarea{width:100%;height:300px;background:#1b223a;color:#fff;border-radius:8px;padding:10px;font-size:14px;margin-bottom:10px}
-.admin button{
-  background:#6250ff;color:#fff;border:none;border-radius:10px;padding:10px 16px;
-  margin-right:10px;margin-bottom:10px;cursor:pointer;font-weight:bold
-}
-.admin .danger{background:#c92e2e}
-.admin .account-item{padding:10px 14px;background:#1b223a;border-radius:8px;margin-bottom:8px;cursor:pointer}
-.admin .account-item:hover{background:#253252}
-
-.end{display:none;text-align:center;background:#12172b;border-radius:20px;padding:40px;margin-top:20px}
+.game{display:none;gap:20px;margin-top:20px}
+.panel{flex:1;background:#12172b;border-radius:20px;padding:24px}
+.panel h3{text-align:center;margin-bottom:16px;color:#ffde55}
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.count-down{font-size:20px;font-weight:700;color:#ffde55}
+.decay{font-size:14px;color:#ccc}
+.life-text{color:#ffde55}
+.progress-bar{width:100%;height:6px;background:#1e253e;border-radius:3px;margin:10px 0;overflow:hidden}
+.progress-line{height:100%;background:linear-gradient(90deg,#ff4380,#fa7250);width:100%;transition:.1s linear}
+.question-box{margin-top:16px}
+.question-title{font-size:16px;line-height:1.5;margin-bottom:16px;color:#f0f4ff}
+.option{background:#1b223a;border-radius:12px;padding:14px;margin-bottom:10px;font-size:14px;cursor:pointer}
+.option.right{background:#1a6c38}
+.option.wrong{background:#7a2c2c}
+.option.mask{pointer-events:none}
+.end{display:none;text-align:center;background:#12172b;border-radius:20px;padding:40px;margin-top:30px}
 .end h2{font-size:26px;color:#f9e488;margin-bottom:20px}
 .end p{color:#c0c8e7;font-size:16px;margin:6px 0}
 .end .final{color:#ffde55;font-size:18px;margin:20px 0}
-.end .race-auth{
-  display:inline-block;background:#ffc107;color:#000;padding:6px 14px;border-radius:10px;font-weight:bold;margin-top:10px;
-}
 .end button{background:linear-gradient(90deg,#ff4380,#fa7250);border:none;border-radius:14px;color:#fff;padding:14px 32px;font-size:16px;margin-top:10px}
+.admin{display:none;background:#12172b;border-radius:20px;padding:30px;margin-top:20px}
+.admin h3{color:#f9e488;margin-bottom:15px}
+.admin button{background:#6250ff;color:#fff;border:none;border-radius:10px;padding:10px 16px;margin:5px}
 </style>
 </head>
 <body>
+
 <div class="main">
   <div class="login" id="loginBox">
-    <h2>星星的密室日常活动——百币英雄</h2>
+    <h2>星星的密室日常活动 - 百币英雄</h2>
+    <div class="theme-box">
+      <div class="theme-title" id="themeTitle"></div>
+      <div class="theme-desc" id="themeDesc"></div>
+    </div>
     <input type="text" id="username" placeholder="请输入昵称">
     <input type="password" id="pwd" placeholder="请输入活动密码">
-    <input type="text" id="reviveCode" placeholder="复活卡激活码（比赛模式必填）">
+    <input type="text" id="reviveCode" placeholder="复活卡激活码">
     <button onclick="login()">开始挑战</button>
-    <div class="tip" id="loginTip"></div>
+    <div class="tip" id="tip"></div>
     <div class="time-info" id="timeInfo"></div>
   </div>
 
   <div class="game" id="gameBox">
-    <div class="top-bar">
-      <div class="user-text" id="userInfo"></div>
-      <div class="race-tag" id="raceTag" style="display:none;">比赛模式</div>
-      <div class="life" id="lifeInfo">复活卡：1</div>
-      <div class="count-down" id="countDown">12</div>
+    <div class="panel">
+      <h3>正常答题</h3>
+      <div class="top-bar">
+        <div>题号：<span id="normalNum">1</span></div>
+        <div class="life-text" id="lifeTip">复活卡：1</div>
+      </div>
+      <div class="question-box">
+        <div class="question-title" id="normalQ"></div>
+        <div class="option" onclick="chooseNormal(0)"></div>
+        <div class="option" onclick="chooseNormal(1)"></div>
+        <div class="option" onclick="chooseNormal(2)"></div>
+        <div class="option" onclick="chooseNormal(3)"></div>
+      </div>
     </div>
-    <div class="progress-bar"><div class="progress-line" id="progress"></div></div>
-    <div class="question-box">
-      <div class="question-title" id="question"></div>
-      <div class="option" onclick="pick(0)"></div>
-      <div class="option" onclick="pick(1)"></div>
-      <div class="option" onclick="pick(2)"></div>
-      <div class="option" onclick="pick(3)"></div>
-    </div>
-  </div>
 
-  <div class="admin" id="adminPanel">
-    <div id="adminMenu">
-      <h3>管理员面板</h3>
-      <button onclick="showEditQuestions()">修改题目</button>
-      <button onclick="showResetRacePanel()">重置比赛账号</button>
-      <button onclick="showResetCodePanel()">重置复活密钥</button>
-      <button onclick="exitAdmin()">返回登录</button>
-    </div>
-    <div id="editQuestionsSection" style="display:none">
-      <h3>修改题目（JSON）</h3>
-      <textarea id="questionEditor"></textarea>
-      <button onclick="saveQuestions()">保存题库</button>
-      <button onclick="backToAdminMenu()">返回</button>
-    </div>
-    <div id="resetRaceSection" style="display:none">
-      <h3>本场已使用比赛账号（点击重置）</h3>
-      <div id="usedAccountsContainer"></div>
-      <button onclick="backToAdminMenu()">返回</button>
-    </div>
-    <div id="resetCodeSection" style="display:none">
-      <h3>复活密钥管理</h3>
-      <p style="margin-bottom:14px;color:#ccc;">点击将清空所有一次性密钥</p>
-      <button class="danger" onclick="resetAllUsedCodes()">重置所有一次性复活密钥</button>
-      <button onclick="backToAdminMenu()">返回</button>
+    <div class="panel">
+      <h3>时间竞速</h3>
+      <div class="top-bar">
+        <div>剩余：<span class="count-down" id="totalTime">120.0</span>s</div>
+        <div>扣减：<span id="decayVal">1.0</span>/s</div>
+      </div>
+      <div class="progress-bar"><div class="progress-line" id="timeBar"></div></div>
+      <div class="question-box">
+        <div class="question-title" id="timeQ"></div>
+        <div class="option" onclick="chooseTime(0)"></div>
+        <div class="option" onclick="chooseTime(1)"></div>
+        <div class="option" onclick="chooseTime(2)"></div>
+        <div class="option" onclick="chooseTime(3)"></div>
+      </div>
     </div>
   </div>
 
   <div class="end" id="endBox">
     <h2 id="endTitle"></h2>
-    <p>昵称：<span id="sName"></span></p>
-    <p>答对题数：<span id="sCorrect"></span></p>
-    <p id="racePeriodTip" style="margin-top:10px;color:#ffde55"></p>
-    <div class="race-auth" id="raceAuth" style="display:none;"></div>
-    <div class="final" id="sFinal"></div>
-    <button onclick="goBack()">返回</button>
+    <p>昵称：<span id="endName"></span></p>
+    <p>正常答题：<span id="endNormal"></span> 题</p>
+    <p>时间竞速：<span id="endTime"></span> 题</p>
+    <p>场次：<span id="endPeriod"></span></p>
+    <div class="final" id="endFinal"></div>
+    <button onclick="backToLogin()">返回首页</button>
+  </div>
+
+  <div class="admin" id="adminBox">
+    <h3>管理员面板</h3>
+    <button onclick="backToLogin()">返回登录</button>
   </div>
 </div>
 
 <script>
+const WEEK_THEME = "脑裂";
+const WEEK_DESC = "双面板同步作答：正常答题可使用复活卡；时间面板120秒，扣减每秒递增0.1，答错惩罚阶梯上升。";
+
 const OLD_PASSWORDS = {
-  "white01":true,
-  "white02":true,
-  "white03":true,
-  "white04":true,
-  "white05":true,
-  "noback01":false,
-  "noback02":false,
-  "noback03":false,
-  "noback04":false,
-  "noback05":false
+  "white202501":true,"white202502":true,"white202503":true,"white202504":true,"white202505":true,
+  "white202506":true,"white202507":true,"white202508":true,"white202509":true,"white202510":true,
+  "white202511":true,"white202512":true,"white202513":true,"white202514":true,"white202515":true,
+  "white202516":true,"white202517":true,"white202518":true,"white202519":true,"white202520":true
 };
-
-const UNLIMITED_PASS = {};
-
+const UNLIMITED_PASS = {
+  "7Sd2Kf9G":true,"P3s8VbN5":true,"2Fk6Zr7D":true,"J5g9Qh2S":true,"4Bv7Rt1K":true
+};
 const RACE_FIXED = {
-  "jingchen":"景晨",
-  "awmcful":"AW",
-  "wangyan":"亡烟",
-  "nannan":"楠楠",
-  "luotuo":"骆驼",
-  "xiaosuda":"小苏打",
-  "miaomiaojun":"喵喵君"
+  "jingchen":"景晨","awmcful":"AW","wangyan":"亡烟","nannan":"楠楠",
+  "luotuo":"骆驼","xiaosuda":"小苏打","miaomiaojun":"喵喵君"
 };
-
 const RACE_FREE = [
-  "bisai1","bisai2","bisai3","bisai4","bisai5",
-  "bisai6","bisai7","bisai8","bisai9","bisai10",
-  "bisai11","bisai12","bisai13","bisai14","bisai15"
+  "bisai1","bisai2","bisai3","bisai4","bisai5","bisai6","bisai7","bisai8",
+  "bisai9","bisai10","bisai11","bisai12","bisai13","bisai14","bisai15"
 ];
-
-const ADMIN_PWD = "jingyuan";
-const ANSWER_TIME = 12;
-const JUDGE_DELAY = 1500;
-
-const SINGLE_USE_CODES = new Set([
-  "123789","456123","789456","147258","369852",
-  "159357","258741","111222","333444","555666"
-]);
-
+const SINGLE_USE_CODES = new Set(["123789","456123","789456","147258","369852","159357","258741"]);
 const UNLIMITED_CODE = "jingchen";
+const ADMIN_PWD = "jingyuan";
 
-let isCompetitionAccount = false;
+function fmtDate(d){
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),d2=String(d.getDate()).padStart(2,'0');
+  const w=['日','一','二','三','四','五','六'][d.getDay()];
+  return `${y}年${m}月${d2}日 周${w}`;
+}
+function getPeriodInfo(){
+  const now=new Date();const day=now.getDay(),h=now.getHours();const s=fmtDate(now);
+  let a=!1,n='';
+  if(day===5){
+    if(h>=6&&h<20){a=!0;n=`${s} 06:00~20:00场`;}
+    if(h>=20&&h<24){a=!0;n=`${s} 20:00~24:00场`;}
+  }
+  if(day===6||day===0){
+    if(h>=8&&h<12){a=!0;n=`${s} 08:00~12:00场`;}
+    if(h>=12&&h<16){a=!0;n=`${s} 12:00~16:00场`;}
+    if(h>=16&&h<20){a=!0;n=`${s} 16:00~20:00场`;}
+    if(h>=20&&h<24){a=!0;n=`${s} 20:00~24:00场`;}
+  }
+  return {allowed:a,periodName:n};
+}
 
-let BANK = [
-{q:"单词‘benefit’表示？",o:["益处","伤害","损失","负担"],a:0},
-{q:"单词‘consequence’意为？",o:["结果","原因","条件","方式"],a:0},
-{q:"英语中，‘然而’的连接词是？",o:["however","therefore","besides","thus"],a:0},
-{q:"牛顿第一定律又称？",o:["惯性定律","加速度定律","作用力定律","万有引力定律"],a:0},
+const BANK = [
+{q:"单词 benefit 意思是？",o:["益处","伤害","损失","负担"],a:0},
+{q:"单词 consequence 意为？",o:["结果","原因","条件","方式"],a:0},
+{q:"英语中表然而的连接词是？",o:["however","therefore","besides","thus"],a:0},
+{q:"牛顿第一定律又称？",o:["惯性定律","加速度定律","作用力定律","引力定律"],a:0},
 {q:"保质期指？",o:["最佳食用期","不可食用","绝对安全","过期可吃"],a:0},
-{q:"骨骼最多矿物质？",o:["铁","钙","锌","镁"],a:1},
-{q:"电脑病毒不通过？",o:["U盘","空气传播","网络","邮件"],a:1},
-{q:"冬季取暖注意？",o:["紧闭门窗","通风防中毒","用炭火","靠近暖气"],a:1},
-{q:"剩菜剩饭属于？",o:["可回收","厨余垃圾","有害","其他"],a:1},
-{q:"人体最大消化腺？",o:["胃","肝脏","胰腺","小肠"],a:1},
+{q:"骨骼中最多的矿物质是？",o:["铁","钙","锌","镁"],a:1},
+{q:"电脑病毒不通过什么传播？",o:["U盘","空气","网络","邮件"],a:1},
+{q:"冬季取暖应注意？",o:["紧闭门窗","通风防中毒","多用炭火","靠近暖气"],a:1},
+{q:"剩菜剩饭属于？",o:["可回收","厨余垃圾","有害垃圾","其他垃圾"],a:1},
+{q:"人体最大消化腺是？",o:["胃","肝脏","胰腺","小肠"],a:1},
 {q:"蒙德风神是谁？",o:["摩拉克斯","巴巴托斯","巴尔泽布","纳西妲"],a:1},
 {q:"璃月岩神是谁？",o:["巴巴托斯","摩拉克斯","巴尔泽布","纳西妲"],a:1},
 {q:"稻妻雷神是谁？",o:["纳西妲","巴尔泽布","巴巴托斯","摩拉克斯"],a:1},
 {q:"须弥草神是谁？",o:["巴尔泽布","纳西妲","巴巴托斯","摩拉克斯"],a:1},
-{q:"主角统称？",o:["空","旅行者","荧","派蒙"],a:1},
-{q:"西风骑士团团长？",o:["丽莎","琴","凯亚","安柏"],a:1},
+{q:"原神主角统称？",o:["空","旅行者","荧","派蒙"],a:1},
+{q:"西风骑士团团长是？",o:["丽莎","琴","凯亚","安柏"],a:1},
 {q:"璃月天权星是？",o:["刻晴","凝光","钟离","甘雨"],a:1},
 {q:"神里家大小姐是？",o:["神里绫人","神里绫华","宵宫","早柚"],a:1},
 {q:"枫丹水神是？",o:["那维莱特","芙宁娜","莱欧斯利","克洛琳德"],a:1},
-{q:"《原神》中‘尘世七执政'不包含？",o:["火神","冰神","月神","水神"],a:2},
+{q:"尘世七执政不包含？",o:["火神","冰神","月神","水神"],a:2},
 {q:"星穹主角统称？",o:["丹恒","开拓者","三月七","姬子"],a:1},
-{q:"列车长是？",o:["姬子","帕姆","瓦尔特","杨"],a:1},
-{q:"贝洛伯格守护者？",o:["希儿","布洛妮娅","杰帕德","桑博"],a:1},
-{q:"仙舟罗浮将军？",o:["彦卿","景元","白露","停云"],a:1},
-{q:"星核猎手领袖？",o:["银狼","卡芙卡","艾利欧","萨姆"],a:1},
-{q:"下层区领袖是？",o:["布洛妮娅","希儿","杰帕德","桑博"],a:1},
-{q:"云上五骁不含？",o:["景元","白露","刃","镜流"],a:1},
-{q:"星际和平公司代表？",o:["石心","托帕","黑塔","艾丝妲"],a:1},
-{q:"主角核心是？",o:["星尘","星核","星光","星云"],a:1},
-{q:"毁灭星神是？",o:["阿基维利","纳努克","姬子","瓦尔特"],a:1}
+{q:"星穹列车长是？",o:["姬子","帕姆","瓦尔特","杨"],a:1},
+
+{q:"《奔跑吧》前身节目是？",o:["极限挑战","跑男","爸爸去哪儿","快乐大本营"],a:1},
+{q:"《极限挑战》男人帮不包含谁？",o:["黄渤","黄磊","邓超","罗志祥"],a:2},
+{q:"《快乐大本营》核心主持是？",o:["何炅","汪涵","孟非","华少"],a:0},
+{q:"《向往的生活》固定MC是？",o:["黄渤","黄磊","邓超","鹿晗"],a:1},
+{q:"《乘风破浪》是哪类综艺？",o:["女团竞演","男团选秀","户外竞技","恋爱观察"],a:0},
+{q:"《披荆斩棘》嘉宾主要是？",o:["女艺人","男艺人","素人","童星"],a:1},
+{q:"《明星大侦探》核心玩法是？",o:["破案推理","做饭","跑步","相亲"],a:0},
+{q:"《密室大逃脱》主打内容是？",o:["密室解谜","唱歌比赛","户外跑男","亲子互动"],a:0},
+{q:"《创造101》属于什么节目？",o:["女团选秀","户外综艺","美食节目","脱口秀"],a:0},
+{q:"《吐槽大会》形式主要是？",o:["吐槽脱口秀","唱歌"," dancing","竞技"],a:0},
+{q:"《脱口秀大会》出品方是？",o:["米未","笑果","湖南卫视","浙江卫视"],a:1},
+{q:"《爸爸去哪儿》引进自哪国？",o:["韩国","美国","英国","日本"],a:0},
+{q:"《心动的信号》是什么类型？",o:["恋爱真人秀","音乐节目","喜剧","亲子"],a:0},
+{q:"《王牌对王牌》固定主持是？",o:["沈涛","汪涵","孟非","华少"],a:0},
+{q:"《天天向上》主持人是？",o:["何炅","汪涵","谢娜","吴昕"],a:1},
+{q:"《非诚勿扰》主持人是？",o:["孟非","华少","李响","李好"],a:0},
+{q:"《朗读者》主持人是？",o:["董卿","朱迅","李思思","欧阳夏丹"],a:0},
+{q:"《声临其境》比拼的是？",o:["演技","配音","唱功","舞蹈"],a:1},
+{q:"《中餐厅》主要内容是？",o:["明星开餐厅","户外跑","唱歌","相亲"],a:0},
+{q:"《我就是演员》前身是？",o:["演员的诞生","跨界歌王","中国梦之声","蒙面歌王"],a:0},
+{q:"《妻子的浪漫旅行》是？",o:["夫妻观察","男团选秀","户外","美食"],a:0},
+{q:"《演员请就位》导师不含？",o:["陈凯歌","尔冬升","郭敬明","冯小刚"],a:3},
+{q:"《这！就是街舞》核心是？",o:["唱歌","街舞竞技","演戏","脱口秀"],a:1},
+{q:"《青春有你》属于什么节目？",o:["选秀","户外","美食","情感"],a:0},
+{q:"《国家宝藏》主打内容是？",o:["文物历史","娱乐游戏","唱歌","户外"],a:0},
+{q:"《亲爱的客栈》内容是？",o:["经营客栈","做饭比赛","选秀","推理"],a:0},
+{q:"《我家那闺女》观察对象是？",o:["男艺人","女艺人","素人","运动员"],a:1},
+{q:"《真正男子汉》类型是？",o:["军旅体验","唱歌","恋爱","美食"],a:0},
+{q:"《舞蹈风暴》比拼的是？",o:["舞蹈","唱歌","演技","口才"],a:0},
+{q:"《上线吧！华彩少年》主打？",o:["国风少年","男团","女团","脱口秀"],a:0},
+
+{q:"太阳系最大行星是？",o:["木星","火星","地球","金星"],a:0},
+{q:"水的分子式是？",o:["H₂O","CO₂","O₂","H₂"],a:0},
+{q:"正常人体温约？",o:["35℃","37℃","39℃","41℃"],a:1},
+{q:"地球自转一圈是？",o:["一年","一月","一天","一小时"],a:2},
+{q:"空气占比最高气体？",o:["氧气","氮气","二氧化碳","氢气"],a:1},
+{q:"不属于基本味觉？",o:["甜","酸","辣","苦"],a:2},
+{q:"彩虹标准颜色数？",o:["5","6","7","8"],a:2},
+{q:"声音传播最快介质？",o:["空气","水","钢铁","真空"],a:2},
+{q:"地壳最多元素？",o:["氧","硅","铝","铁"],a:0},
+{q:"一天最低气温在？",o:["午夜","日出前后","正午","傍晚"],a:1},
+
+{q:"iPhone 厂商是？",o:["三星","华为","苹果","小米"],a:2},
+{q:"Windows 开发商？",o:["谷歌","微软","苹果","亚马逊"],a:1},
+{q:"4G 的 G 指？",o:["游戏","世代","流量","网速"],a:1},
+{q:"蓝牙用途是？",o:["近距离无线","充电","上网","导航"],a:0},
+{q:"CPU 中文是？",o:["内存","中央处理器","硬盘","显卡"],a:1},
+{q:"1GB 等于？",o:["1000MB","1024MB","2048MB","512MB"],a:1},
+{q:"属于浏览器的是？",o:["微信","Chrome","抖音","QQ"],a:1},
+{q:"USB 不能用来？",o:["充电","传文件","打电话","接外设"],a:2},
+{q:"二维码不能？",o:["支付","加好友","发电","跳转"],a:2},
+{q:"键盘最左下角？",o:["Ctrl","Shift","Alt","Win"],a:0},
+
+{q:"苹果属于？",o:["蔬菜","水果","肉类","谷物"],a:1},
+{q:"牛奶富含？",o:["铁","钙","锌","碘"],a:1},
+{q:"富含维C的是？",o:["牛肉","橙子","米饭","鸡蛋"],a:1},
+{q:"方便面主要成分？",o:["蛋白质","淀粉","脂肪","维生素"],a:1},
+{q:"不属于主食？",o:["米饭","面条","白菜","馒头"],a:2},
+{q:"隔夜茶能否喝？",o:["能","不能","看情况","都错"],a:2},
+{q:"辛辣食物是？",o:["白菜","辣椒","黄瓜","冬瓜"],a:1},
+{q:"蜂蜜主要成分？",o:["糖","蛋白质","脂肪","维生素"],a:0},
+{q:"乳制品是？",o:["酸奶","果汁","可乐","茶"],a:0},
+{q:"吃盐多影响？",o:["血压","视力","听力","味觉"],a:0},
+
+{q:"《西游记》作者？",o:["曹雪芹","罗贯中","吴承恩","施耐庵"],a:2},
+{q:"《红楼梦》主角？",o:["宋江","刘备","贾宝玉","唐僧"],a:2},
+{q:"三国主公不含？",o:["曹操","刘备","孙权","方腊"],a:3},
+{q:"水浒一百单八将？",o:["好汉","妖怪","神仙","皇帝"],a:0},
+{q:"《三体》作者？",o:["刘慈欣","韩寒","郭敬明","莫言"],a:0},
+{q:"不是童话的是？",o:["丑小鸭","灰姑娘","三体","白雪公主"],a:2},
+{q:"《朝花夕拾》作者？",o:["鲁迅","老舍","茅盾","巴金"],a:0},
+{q:"《骆驼祥子》作者？",o:["鲁迅","老舍","茅盾","巴金"],a:1},
+{q:"床前明月光作者？",o:["李白","杜甫","白居易","王维"],a:0},
+{q:"但愿人长久作者？",o:["苏轼","李白","杜甫","陆游"],a:0},
+
+{q:"中国首都是？",o:["上海","北京","广州","深圳"],a:1},
+{q:"我国国旗是？",o:["五星红旗","青天白日","三色旗","星条旗"],a:0},
+{q:"我国民族数量？",o:["55","56","57","58"],a:1},
+{q:"长城主要作用？",o:["观光","防御","水利","交通"],a:1},
+{q:"黄河是第几长河？",o:["一","二","三","四"],a:1},
+{q:"属于直辖市？",o:["南京","重庆","杭州","广州"],a:1},
+{q:"最大淡水湖是？",o:["鄱阳湖","洞庭湖","太湖","青海湖"],a:0},
+{q:"珠峰位于？",o:["西藏","新疆","青海","云南"],a:0},
+{q:"春节是农历？",o:["正月初一","正月十五","五月五","八月十五"],a:0},
+{q:"中秋吃？",o:["粽子","月饼","汤圆","饺子"],a:1},
+
+{q:"篮球上场人数？",o:["5","6","7","8"],a:0},
+{q:"足球标准时长？",o:["45","90","120","60"],a:1},
+{q:"奥运会几年一届？",o:["2","3","4","5"],a:2},
+{q:"乒乓球起源国？",o:["中国","英国","美国","日本"],a:1},
+{q:"不属于田径？",o:["跑步","跳远","游泳","跳高"],a:2},
+{q:"NBA 项目是？",o:["足球","篮球","排球","网球"],a:1},
+{q:"羽毛球场地分？",o:["左右","前后","单打双打","上下"],a:2},
+{q:"水上项目是？",o:["跑步","游泳","跳高","铅球"],a:1},
+{q:"俯卧撑练？",o:["腿","胸臂","腹","背"],a:1},
+{q:"慢跑锻炼？",o:["心肺","力量","爆发","柔韧"],a:0},
+
+{q:"YYDS 意思是？",o:["永远的神","一样的事","一样帅","一样傻"],a:0},
+{q:"破防了意思是？",o:["防御坏了","心理破防","游戏输了","网断了"],a:1},
+{q:"内卷意思是？",o:["内部竞争","外部合作","躺平","摆烂"],a:0},
+{q:"躺平意思是？",o:["努力","不折腾","竞争","创业"],a:1},
+{q:"栓Q 意思是？",o:["感谢","道歉","吐槽","生气"],a:0},
+{q:"退退退出自？",o:["吵架梗","游戏梗","综艺梗","影视梗"],a:0},
+{q:"挖呀挖是？",o:["儿歌梗","游戏梗","综艺梗","影视梗"],a:0},
+{q:"电子榨菜指？",o:["下饭视频","电子垃圾","游戏","外卖"],a:0},
+{q:"显眼包意思？",o:["低调","出风头","有钱","路人"],a:1},
+{q:"泰酷辣是谁梗？",o:["王鹤棣","鹿晗","吴亦凡","黄子韬"],a:0},
+
+{q:"27-8=15这个梗来自于谁？",o:["喵喵君","aw","景晨","亡烟"],a:0},
+{q:"√50=2√5这个梗来源于谁？",o:["aw","心楠楠","骆驼","景晨"],a:3},
+{q:"woc我放出猎人了 来源于谁的经典桥段？",o:["小香橙","景晨","废废","纯甄"],a:1}
 ];
 
 const $ = id => document.getElementById(id);
-let currentUser = '';
-let isRaceMode = false;
-let racePeriodText = '';
+let userName = "", isRace = false, currentPeriod = "", life = 1;
+let usedIndexSet = new Set(), normalQ = null, timeQ = null, normalCorrect = 0, timeCorrect = 0;
+let normalIndex = 0, timeIndex = 0, gameOver = false;
+let totalTime = 120, decay = 1.0, timeLoop = null;
+let wrongCount = 0;
 
-let usedFixedAccounts = JSON.parse(localStorage.getItem('usedRaceAccounts') || '{}');
-let usedCodes = JSON.parse(localStorage.getItem('usedReviveCodes') || '[]');
+let usedAccounts = JSON.parse(localStorage.getItem('usedRaceAccounts') || '{}');
+let usedReviveCodes = JSON.parse(localStorage.getItem('usedReviveCodes') || '[]');
 
-let questionList = [];
-let currentQ = 0;
-let correct = 0;
-let life = 1;
-let usedLife = 0;
-let timer = null;
-let remain = ANSWER_TIME;
-let selected = -1;
-
-function fmtDate(d) {
-  const year = d.getFullYear();
-  const month = String(d.getMonth()+1).padStart(2,'0');
-  const date = String(d.getDate()).padStart(2,'0');
-  const w = ['日','一','二','三','四','五','六'][d.getDay()];
-  return `${year}年${month}月${date}日 周${w}`;
+function getUniqueQuestion() {
+  let available = [];
+  for (let i = 0; i < BANK.length; i++) if (!usedIndexSet.has(i)) available.push(i);
+  if (available.length === 0) return null;
+  let idx = available[Math.floor(Math.random() * available.length)];
+  usedIndexSet.add(idx);
+  return BANK[idx];
 }
-
-function getPeriodInfo() {
-  const now = new Date();
-  const day = now.getDay();
-  const h = now.getHours();
-  const dateStr = fmtDate(now);
-  let allowed = false;
-  let periodName = '';
-  if (day === 5) {
-    if (h >= 6 && h < 20)  { allowed = true; periodName = `${dateStr} 06:00~20:00场`; }
-    if (h >= 20 && h < 24) { allowed = true; periodName = `${dateStr} 20:00~24:00场`; }
-  } else if (day === 6 || day === 0) {
-    if (h >= 8 && h < 12)  { allowed = true; periodName = `${dateStr} 08:00~12:00场`; }
-    if (h >= 12 && h < 16) { allowed = true; periodName = `${dateStr} 12:00~16:00场`; }
-    if (h >= 16 && h < 20) { allowed = true; periodName = `${dateStr} 16:00~20:00场`; }
-    if (h >= 20 && h < 24) { allowed = true; periodName = `${dateStr} 20:00~24:00场`; }
-  }
-  return { allowed, periodName };
-}
-
-function updateTimeDisplay() {
+function updateTimeTip() {
   const pi = getPeriodInfo();
-  pi.allowed ? $('timeInfo').innerText = pi.periodName : $('timeInfo').innerText = '目前不是挑战模式时间';
+  $('timeInfo').innerText = pi.allowed ? pi.periodName : '当前非比赛开放时间';
 }
 
-function isFixedAccountUsed(pwd, key) {
-  return usedFixedAccounts[pwd] === key;
-}
-
-function markFixedAccountUsed(pwd, key) {
-  usedFixedAccounts[pwd] = key;
-  localStorage.setItem('usedRaceAccounts', JSON.stringify(usedFixedAccounts));
-}
-
-function isCompetitionPassword(pwd) {
-  return pwd in RACE_FIXED || RACE_FREE.includes(pwd);
-}
-
-function checkAndConsumeCode(code) {
-  const cleanCode = code.trim().toLowerCase();
-  if (cleanCode === UNLIMITED_CODE.toLowerCase()) return true;
-  if (!SINGLE_USE_CODES.has(cleanCode)) return false;
-  if (usedCodes.includes(cleanCode)) return false;
-  usedCodes.push(cleanCode);
-  localStorage.setItem('usedReviveCodes', JSON.stringify(usedCodes));
-  return true;
-}
-
-function resetAllUsedCodes() {
-  if (!confirm('确定重置？')) return;
-  usedCodes = [];
-  localStorage.setItem('usedReviveCodes', JSON.stringify(usedCodes));
-  alert('已重置');
-}
-
-// 管理员
-function showAdminMenu() {
-  $('adminMenu').style.display='block';
-  $('editQuestionsSection').style.display='none';
-  $('resetRaceSection').style.display='none';
-  $('resetCodeSection').style.display='none';
-}
-function showEditQuestions(){
-  $('adminMenu').style.display='none';
-  $('editQuestionsSection').style.display='block';
-}
-async function showResetRacePanel(){
-  $('adminMenu').style.display='none';
-  $('resetRaceSection').style.display='block';
-  const pi=getPeriodInfo();
-  const ck=pi.periodName;
-  const c=$('usedAccountsContainer');
-  c.innerHTML='';
-  if(!ck){
-    c.innerHTML='<div class="account-item">不在比赛时段</div>';
+function login() {
+  userName = $('username').value.trim();
+  let pwd = $('pwd').value.trim();
+  let code = $('reviveCode').value.trim();
+  $('tip').innerText = "";
+  if (!userName) return $('tip').innerText = "请输入昵称";
+  if (!pwd) return $('tip').innerText = "请输入密码";
+  if (pwd === ADMIN_PWD) {
+    $('loginBox').style.display = "none";
+    $('adminBox').style.display = "block";
     return;
   }
-  const list=[];
-  for(let p in usedFixedAccounts){
-    if(usedFixedAccounts[p]===ck){
-      list.push({pwd:p,name:RACE_FIXED[p]||p});
+  const pi = getPeriodInfo();
+  currentPeriod = pi.periodName;
+  if (pwd in RACE_FIXED) {
+    if (!pi.allowed) return $('tip').innerText = "当前非比赛时间";
+    if (usedAccounts[pwd]) return $('tip').innerText = "该比赛账号已使用";
+    isRace = true; usedAccounts[pwd] = true;
+    localStorage.setItem('usedRaceAccounts', JSON.stringify(usedAccounts));
+    life = 1; startGame(); return;
+  }
+  if (RACE_FREE.includes(pwd)) {
+    if (!pi.allowed) return $('tip').innerText = "当前非比赛时间";
+    isRace = true; life = 1; startGame(); return;
+  }
+  if (pwd in OLD_PASSWORDS || pwd in UNLIMITED_PASS) {
+    isRace = false; life = 0;
+    if (code) {
+      if (code === UNLIMITED_CODE) life = 1;
+      else if (SINGLE_USE_CODES.has(code) && !usedReviveCodes.includes(code)) {
+        usedReviveCodes.push(code);
+        localStorage.setItem('usedReviveCodes', JSON.stringify(usedReviveCodes));
+        life = 1;
+      } else return $('tip').innerText = "复活卡无效或已使用";
     }
+    startGame(); return;
   }
-  if(list.length===0){
-    c.innerHTML='<div class="account-item">暂无使用账号</div>';
-    return;
-  }
-  list.forEach(item=>{
-    const d=document.createElement('div');
-    d.className='account-item';
-    d.innerText=`账号：${item.name}`;
-    d.onclick=()=>{
-      delete usedFixedAccounts[item.pwd];
-      localStorage.setItem('usedRaceAccounts',JSON.stringify(usedFixedAccounts));
-      alert(`已重置：${item.name}`);
-      showResetRacePanel();
-    };
-    c.appendChild(d);
-  });
+  $('tip').innerText = "密码错误";
 }
-function showResetCodePanel(){
-  $('adminMenu').style.display='none';
-  $('resetCodeSection').style.display='block';
+
+function startGame() {
+  $('loginBox').style.display = "none";
+  $('gameBox').style.display = "flex";
+  gameOver = false; usedIndexSet.clear();
+  normalCorrect = 0; timeCorrect = 0;
+  normalIndex = 0; timeIndex = 0;
+  totalTime = 120; decay = 1.0; wrongCount = 0;
+  loadNormal(); loadTime(); startTimeLoop();
 }
-function backToAdminMenu(){
-  showAdminMenu();
+
+function loadNormal() {
+  normalQ = getUniqueQuestion();
+  if (!normalQ) return endGame("题库已空");
+  normalIndex++; $('normalNum').innerText = normalIndex;
+  $('normalQ').innerText = normalQ.q;
+  $('lifeTip').innerText = `复活卡：${life}`;
+  let ops = document.querySelectorAll('#gameBox .panel:first-child .option');
+  ops.forEach((o,i)=>{ o.innerText = normalQ.o[i]; o.classList.remove("right","wrong","mask"); });
 }
-function exitAdmin(){
-  $('adminPanel').style.display='none';
-  $('loginBox').style.display='block';
-}
-function saveQuestions(){
-  try{
-    BANK=JSON.parse($('questionEditor').value);
-    alert('保存成功');
-  }catch(e){
-    alert('JSON格式错误');
+function chooseNormal(i) {
+  if (gameOver) return;
+  let ops = document.querySelectorAll('#gameBox .panel:first-child .option');
+  ops.forEach(o=>o.classList.add("mask"));
+  let ok = i === normalQ.a;
+  if (ok) {
+    ops[i].classList.add("right"); normalCorrect++;
+    if (normalCorrect >= 12) { setTimeout(()=>endGame("恭喜通关！左边答对12题"),800); return; }
+    setTimeout(loadNormal,800);
+  } else {
+    ops[i].classList.add("wrong"); ops[normalQ.a].classList.add("right");
+    if (life>0) { life--; setTimeout(()=>{ usedIndexSet.delete([...usedIndexSet].pop()); loadNormal(); },800); }
+    else setTimeout(()=>endGame("正常答题失败"),800);
   }
 }
 
-// 登录
-function login(){
-  const u=$('username').value.trim();
-  const p=$('pwd').value.trim();
-  const r=$('reviveCode').value.trim();
-  $('loginTip').innerText='';
-  if(!p){
-    $('loginTip').innerText='请输入密码';
-    return;
-  }
-  currentUser=u;
-  isRaceMode=false;
-  racePeriodText='';
-  isCompetitionAccount=isCompetitionPassword(p);
-
-  if(p===ADMIN_PWD){
-    $('loginBox').style.display='none';
-    $('adminPanel').style.display='block';
-    showAdminMenu();
-    updateTimeDisplay();
-    return;
-  }
-
-  if(isCompetitionAccount){
-    const pi=getPeriodInfo();
-    if(!pi.allowed){
-      $('loginTip').innerText='当前非比赛时间';
-      return;
-    }
-    isRaceMode=true;
-    racePeriodText=pi.periodName;
-    if(p in RACE_FIXED){
-      const k=pi.periodName;
-      if(isFixedAccountUsed(p,k)){
-        $('loginTip').innerText='该账号本场已使用';
-        return;
-      }
-      currentUser=RACE_FIXED[p];
-      markFixedAccountUsed(p,k);
-    }
-  }else{
-    if(!(p in OLD_PASSWORDS)){
-      $('loginTip').innerText='密码不正确';
-      return;
-    }
-  }
-
-  life=isRaceMode?(checkAndConsumeCode(r)?1:0):1;
-  usedLife=0;
-  startGame();
+function loadTime() {
+  timeQ = getUniqueQuestion();
+  if (!timeQ) return endGame("题库已空");
+  timeIndex++; $('timeQ').innerText = timeQ.q;
+  let ops = document.querySelectorAll('#gameBox .panel:last-child .option');
+  ops.forEach((o,i)=>{ o.innerText = timeQ.o[i]; o.classList.remove("right","wrong","mask"); });
+  updateTimeUI();
 }
-
-// 游戏
-function startGame(){
-  $('loginBox').style.display='none';
-  $('gameBox').style.display='block';
-  document.body.classList.toggle('competition-mode',isRaceMode);
-  $('raceTag').style.display=isRaceMode?'inline-block':'none';
-  $('userInfo').innerText=`玩家：${currentUser}`;
-  currentQ=0;
-  correct=0;
-  questionList=shuffle([...BANK]).slice(0,12);
-  showQuestion();
-}
-
-function goBack(){
-  clearInterval(timer);
-  $('gameBox').style.display='none';
-  $('endBox').style.display='none';
-  $('loginBox').style.display='block';
-  document.body.classList.remove('competition-mode');
-  updateTimeDisplay();
-}
-
-function showQuestion(){
-  if(currentQ>=questionList.length){
-    showEnd('挑战完成');
-    return;
-  }
-  selected=-1;
-  remain=ANSWER_TIME;
-  const q=questionList[currentQ];
-  $('question').innerText=`${currentQ+1}. ${q.q}`;
-  const o=document.querySelectorAll('.option');
-  o.forEach((e,i)=>{
-    e.innerText=q.o[i];
-    e.classList.remove('selected','right','wrong','mask');
-  });
-  updateCount();
-  clearInterval(timer);
-  timer=setInterval(()=>{
-    remain--;
-    updateCount();
-    if(remain<=0){
-      clearInterval(timer);
-      judge();
-    }
+function startTimeLoop() {
+  clearInterval(timeLoop);
+  timeLoop = setInterval(()=>{
+    if (gameOver) return;
+    totalTime -= decay;
+    decay = Math.round((decay + 0.1)*10)/10;
+    if (totalTime <= 0) { totalTime = 0; endGame("时间耗尽"); }
+    updateTimeUI();
   },1000);
 }
-
-function updateCount(){
-  $('countDown').innerText=remain;
-  $('progress').style.width=(remain/ANSWER_TIME*100)+'%';
-  $('lifeInfo').innerText=`复活卡：${life}`;
+function updateTimeUI() {
+  $('totalTime').innerText = totalTime.toFixed(1);
+  $('decayVal').innerText = decay.toFixed(1);
+  $('timeBar').style.width = (totalTime/120*100) + "%";
 }
+function chooseTime(i) {
+  if (gameOver) return;
+  let ops = document.querySelectorAll('#gameBox .panel:last-child .option');
+  ops.forEach(o=>o.classList.add("mask"));
+  let ok = i === timeQ.a;
 
-function pick(idx){
-  if(selected!==-1)return;
-  selected=idx;
-  const o=document.querySelectorAll('.option');
-  o.forEach(e=>e.classList.remove('selected'));
-  o[idx].classList.add('selected');
-}
-
-function judge(){
-  const q=questionList[currentQ];
-  const o=document.querySelectorAll('.option');
-  o.forEach(e=>e.classList.add('mask'));
-  const ok=selected===q.a;
-  if(ok){
-    o[selected].classList.add('right');
-    correct++;
-  }else{
-    if(selected!==-1)o[selected].classList.add('wrong');
-    o[q.a].classList.add('right');
+  if (ok) {
+    ops[i].classList.add("right");
+    timeCorrect++;
+    decay = wrongCount + 1;
+  } else {
+    ops[i].classList.add("wrong");
+    ops[timeQ.a].classList.add("right");
+    wrongCount++;
+    decay = wrongCount + 1;
   }
-  setTimeout(()=>{
-    if(ok){
-      currentQ++;
-      showQuestion();
-    }else{
-      if(life>0){
-        life--;
-        usedLife++;
-        currentQ++;
-        showQuestion();
-      }else{
-        showEnd('挑战失败');
-      }
-    }
-  },JUDGE_DELAY);
+
+  setTimeout(loadTime, 800);
 }
 
-function showEnd(t){
-  clearInterval(timer);
-  $('gameBox').style.display='none';
-  $('endBox').style.display='block';
-  $('endTitle').innerText=t;
-  $('sName').innerText=currentUser;
-  $('sCorrect').innerText=correct;
-  $('racePeriodTip').innerText=isRaceMode?`参赛时段：${racePeriodText}`:'';
-  $('raceAuth').style.display=isRaceMode?'inline-block':'none';
-  const total=correct+usedLife;
-  const ft=total>=12?"请截图给景晨":total>=10?"优秀！":total>=6?"不错！":"加油！";
-  $('sFinal').innerText=ft;
+function endGame(msg) {
+  gameOver = true; clearInterval(timeLoop);
+  $('gameBox').style.display = "none";
+  $('endBox').style.display = "block";
+  $('endTitle').innerText = msg;
+  $('endName').innerText = userName;
+  $('endNormal').innerText = normalCorrect;
+  $('endTime').innerText = timeCorrect;
+  $('endPeriod').innerText = currentPeriod || "非比赛场";
+  $('endFinal').innerText = msg.includes("恭喜通关") ? "百币英雄通关成功！" : "再接再厉";
+}
+function backToLogin() {
+  clearInterval(timeLoop); gameOver = true;
+  $('loginBox').style.display = "block";
+  $('gameBox').style.display = "none";
+  $('endBox').style.display = "none";
+  $('adminBox').style.display = "none";
 }
 
-function shuffle(a){
-  for(let i=a.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
-  return a;
-}
-
-updateTimeDisplay();
+$('themeTitle').innerText = "本周主题：" + WEEK_THEME;
+$('themeDesc').innerText = WEEK_DESC;
+updateTimeTip();
 </script>
 </body>
 </html>
